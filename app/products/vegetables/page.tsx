@@ -13,13 +13,15 @@ export const metadata = pageMetadata({
 
 export default function VegetablesPage() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12 lg:py-16">
+    <div className="mx-auto max-w-6xl px-5 py-8 lg:py-10">
       <p className="text-sm text-muted">
-        <Link href="/products" className="underline underline-offset-4">Products</Link>
+        <Link href="/products" className="underline underline-offset-4">
+          Products
+        </Link>
       </p>
-      <h1 className="mt-3 font-serif text-4xl sm:text-5xl">{group.name}</h1>
-      <p className="prose-measure mt-4 text-ink-soft">{group.intro}</p>
-      <div className="mt-10">
+      <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{group.name}</h1>
+      <p className="mt-3 max-w-2xl text-ink-soft">{group.intro}</p>
+      <div className="mt-8">
         <Catalogue only="vegetables" />
       </div>
     </div>

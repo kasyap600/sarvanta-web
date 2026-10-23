@@ -13,17 +13,21 @@ export const metadata = pageMetadata({
 
 export default function ProductsPage() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12 lg:py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">Catalogue</p>
-      <h1 className="mt-3 font-serif text-4xl sm:text-5xl">The range</h1>
-      <p className="prose-measure mt-4 text-ink-soft">
-        {products.length} products, in three groups. Red chillies and turmeric, whole and ground, are the priority lines. Packing is 25 kg or 50 kg PP bags, jute bags, or custom. Private labelling is on request.
+    <div className="mx-auto max-w-6xl px-5 py-8 lg:py-10">
+      <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-forest">Catalogue</p>
+      <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Product range</h1>
+      <p className="mt-3 max-w-2xl text-ink-soft">
+        {products.length} products, in three groups. Red chillies and turmeric, whole and ground, are the priority lines. Search by name, or filter by category. Request a quote for one product, or add several to a single enquiry.
       </p>
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <Link href={quoteHref()} className="btn">Request a quote</Link>
-        <a href="/images/Product%20Portfolio.pdf" className="btn-line">Product catalogue (PDF)</a>
+      <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+        <Link href={quoteHref()} className="btn">
+          Request a quote
+        </Link>
+        <a href="/images/Product%20Portfolio.pdf" className="btn-line">
+          Product catalogue (PDF)
+        </a>
       </div>
-      <div className="mt-10">
+      <div className="mt-8">
         <Catalogue />
       </div>
     </div>

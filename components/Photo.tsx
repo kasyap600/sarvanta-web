@@ -42,9 +42,10 @@ export function Photo({
   );
 }
 
-export function PhotoCredit({ credit }: { credit: ImageCredit }) {
+export function PhotoCredit({ credit, as = "figcaption" }: { credit: ImageCredit; as?: "figcaption" | "p" }) {
+  const Tag = as;
   return (
-    <figcaption className="mt-2 text-[11px] leading-snug text-muted">
+    <Tag className="mt-2 text-[11px] leading-snug text-muted">
       Interim photo:{" "}
       <a className="underline decoration-line underline-offset-2" href={credit.authorUrl}>
         {credit.author}
@@ -58,6 +59,6 @@ export function PhotoCredit({ credit }: { credit: ImageCredit }) {
         Source
       </a>
       . Replace with Sarvanta’s own photograph.
-    </figcaption>
+    </Tag>
   );
 }

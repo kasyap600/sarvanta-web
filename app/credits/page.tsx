@@ -10,7 +10,7 @@ export const metadata = pageMetadata({
 export default function CreditsPage() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-12 lg:py-16">
-      <h1 className="font-serif text-4xl">Image credits</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Image credits</h1>
       <p className="mt-4 text-sm leading-relaxed text-ink-soft">
         Every product photograph on this preview is an interim picture from Wikimedia Commons. Licences are CC0, public domain, CC BY, or CC BY-SA, which allow commercial use. Replace them with Sarvanta Global’s own photography before the site is treated as final. The same list is kept in IMAGE_CREDITS.md.
       </p>

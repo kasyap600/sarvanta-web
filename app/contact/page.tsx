@@ -12,22 +12,22 @@ export const metadata = pageMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto grid max-w-6xl gap-12 px-5 py-12 lg:grid-cols-12 lg:py-16">
-      <div className="lg:col-span-7">
-        <h1 className="font-serif text-4xl sm:text-5xl">Request a quote</h1>
-        <p className="mt-4 text-ink-soft">
-          Tell us the product and the quantity. We reply within 24 hours. If you opened this page from a product, that product is already selected.
+    <div className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-12 lg:py-10">
+      <div className="min-w-0 lg:col-span-7">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Request a quote</h1>
+        <p className="mt-3 text-ink-soft">
+          Tell us the product and the quantity. We reply within 24 hours. If you opened this page from a product, that product is already selected. If you added several products, they are listed on the form.
         </p>
-        <div className="mt-8">
-          <Suspense fallback={<div className="h-96 animate-pulse border border-line bg-card" />}>
+        <div className="mt-6">
+          <Suspense fallback={<div className="h-96 border border-line bg-white" />}>
             <ContactForm />
           </Suspense>
         </div>
       </div>
       <aside className="lg:col-span-5">
-        <div className="border border-line bg-card p-6 lg:sticky lg:top-24">
-          <h2 className="font-serif text-3xl">Talk to us directly</h2>
-          <ul className="mt-5 space-y-4 text-sm">
+        <div className="border border-line bg-white p-5 lg:sticky lg:top-24">
+          <h2 className="text-lg font-semibold">Talk to us directly</h2>
+          <ul className="mt-4 space-y-4 text-sm">
             <li>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Phone</p>
               <a className="mt-1 inline-flex min-h-11 items-center text-base underline underline-offset-4" href={`tel:${site.phoneTel}`}>
@@ -56,7 +56,7 @@ export default function ContactPage() {
               <p className="mt-1">{site.location}</p>
             </li>
           </ul>
-          <ol className="mt-8 space-y-3 border-t border-line pt-6 text-sm text-ink-soft">
+          <ol className="mt-6 space-y-2 border-t border-line pt-5 text-sm text-ink-soft">
             <li>1. We read the enquiry.</li>
             <li>2. We reply with a quote within 24 hours.</li>
             <li>3. A sample can be arranged.</li>

@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppButton";
+import { EnquiryProvider } from "@/components/enquiry";
 import { site } from "@/lib/site";
 
-const inter = Inter({
-  variable: "--font-inter",
+const plex = IBM_Plex_Sans({
+  weight: "variable",
   subsets: ["latin"],
+  variable: "--font-plex",
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const plexMono = IBM_Plex_Mono({
+  weight: ["400", "500"],
   subsets: ["latin"],
+  variable: "--font-plex-mono",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -50,20 +54,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable} h-full`}>
-      <body className="flex min-h-full flex-col font-sans text-ink antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-card focus:px-4 focus:py-3"
-        >
-          Skip to content
-        </a>
-        <Navbar />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <WhatsAppFloat />
+    <html lang="en" className={`${plex.variable} ${plexMono.variable} h-full`}>
+      <body className="flex min-h-full flex-col bg-paper font-sans text-ink antialiased">
+        <EnquiryProvider>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-4 focus:py-3"
+          >
+            Skip to content
+          </a>
+          <Navbar />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <WhatsAppFloat />
+        </EnquiryProvider>
       </body>
     </html>
   );

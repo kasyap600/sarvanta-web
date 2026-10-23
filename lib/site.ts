@@ -5,7 +5,7 @@ export const site = {
   phoneDisplay: "+91 99004 22441",
   phoneTel: "+919900422441",
   whatsapp: "919900422441",
-  location: "Bangalore, Karnataka, India",
+  location: "Bangalore",
   description:
     "Sarvanta Global, Bangalore, sources and trades Indian spices and agri commodities in bulk for businesses in India and abroad. Request a quote — we reply within 24 hours.",
 } as const;
