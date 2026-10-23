@@ -3,225 +3,191 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, Sprout, Layers, Package } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { quoteHref } from "@/lib/site";
 
-const productDropdown = [
-  { href: "/products/spices",                    label: "Premium Spices",               desc: "Red Chillies, Black Pepper, White Pepper", icon: Sprout  },
-  { href: "/products/powders",                   label: "Natural Powders",              desc: "Moringa Powder, Jaggery Powder",            icon: Layers  },
-  { href: "/products/dehydrated-vegetable-powders", label: "Vegetable Powders",        desc: "13+ dehydrated vegetable powders",          icon: Package },
-];
-
-const navLinks = [
-  { href: "/",        label: "Home" },
-  { href: "/products", label: "Products", hasDropdown: true },
-  { href: "/about",   label: "About Us" },
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Products" },
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
+const productLinks = [
+  { href: "/products", label: "All products" },
+  { href: "/products/spices", label: "Spices" },
+  { href: "/products/powders", label: "Moringa and jaggery" },
+  { href: "/products/dehydrated-vegetable-powders", label: "Vegetable powders" },
+  { href: "/products/red-chillies", label: "Red chillies" },
+  { href: "/products/red-chilli-powder", label: "Red chilli powder" },
+  { href: "/products/turmeric-fingers", label: "Turmeric fingers" },
+  { href: "/products/turmeric-powder", label: "Turmeric powder" },
+];
+
 export default function Navbar() {
-  const [open, setOpen]           = useState(false);
-  const [scrolled, setScrolled]   = useState(false);
-  const [dropdown, setDropdown]   = useState(false);
-  const [mobileProducts, setMobileProducts] = useState(false);
-  const dropdownRef               = useRef<HTMLDivElement>(null);
-  const pathname                  = usePathname();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
+  const menuId = useId();
+  const productsId = useId();
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const productWrap = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
+    setOpen(false);
+    setProductsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdown(false);
-      }
+    if (!open) return;
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!productsOpen) return;
+    const onPointer = (event: MouseEvent) => {
+      if (!productWrap.current?.contains(event.target as Node)) setProductsOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setProductsOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [productsOpen]);
+
+  const active = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all duration-300 bg-[#060D1A]/90 backdrop-blur-md ${
-        scrolled ? "shadow-[0_2px_32px_rgba(0,0,0,0.6),0_1px_0_rgba(201,168,76,0.08)]" : ""
-      }`}
-    >
-      {/* Top gold line */}
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
+    <header className="sticky top-0 z-40 border-b border-line bg-paper">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
+        <Link href="/" className="shrink-0" aria-label="Sarvanta Global, home">
+          <Image
+            src="/images/logo-transparent.png"
+            alt=""
+            width={1919}
+            height={575}
+            className="h-11 w-auto"
+            preload
+          />
+        </Link>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[84px]">
-          {/* Logo */}
-          <Link href="/" className="flex items-center group">
-            <Image
-              src="/images/Logo.png"
-              alt="Sarvanta Global"
-              width={260}
-              height={86}
-              className="h-[80px] w-auto object-contain"
-              priority
-            />
-          </Link>
-
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
-              const active = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
-
-              if (link.hasDropdown) {
-                return (
-                  <div key={link.href} className="relative" ref={dropdownRef}>
-                    <button
-                      onClick={() => setDropdown(!dropdown)}
-                      className={`relative inline-flex items-center gap-1 px-4 py-2 text-[13px] tracking-wide transition-colors duration-200 ${
-                        active ? "text-[#C9A84C]" : "text-blue-200/60 hover:text-white"
-                      }`}
-                    >
-                      {link.label}
-                      <ChevronDown size={12} className={`opacity-60 transition-transform duration-200 ${dropdown ? "rotate-180" : ""}`} />
-                      {active && (
-                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A84C]" />
-                      )}
-                    </button>
-
-                    {dropdown && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-[#060D1A] border border-[#C9A84C]/20 shadow-[0_8px_32px_rgba(0,0,0,0.6)] z-50">
-                        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
-                        <div className="p-2">
-                          <Link
-                            href="/products"
-                            onClick={() => setDropdown(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-[11px] text-[#C9A84C]/60 hover:text-[#C9A84C] tracking-[0.2em] uppercase font-semibold transition-colors border-b border-white/5 mb-1"
-                          >
-                            View All Products
-                          </Link>
-                          {productDropdown.map(({ href, label, desc, icon: Icon }) => (
-                            <Link
-                              key={href}
-                              href={href}
-                              onClick={() => setDropdown(false)}
-                              className="flex items-start gap-3 px-3 py-3 hover:bg-[#C9A84C]/5 transition-colors group rounded-sm"
-                            >
-                              <div className="w-7 h-7 rounded-full border border-[#C9A84C]/30 flex items-center justify-center shrink-0 mt-0.5 group-hover:border-[#C9A84C]/60">
-                                <Icon size={13} className="text-[#C9A84C]" />
-                              </div>
-                              <div>
-                                <p className="text-white text-[12px] font-semibold leading-tight">{label}</p>
-                                <p className="text-blue-200/40 text-[10px] mt-0.5 leading-snug">{desc}</p>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative inline-flex items-center gap-1 px-4 py-2 text-[13px] tracking-wide transition-colors duration-200 ${
-                    active ? "text-[#C9A84C]" : "text-blue-200/60 hover:text-white"
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+          {links.map((link) =>
+            link.href === "/products" ? (
+              <div key={link.href} className="relative" ref={productWrap}>
+                <button
+                  type="button"
+                  className={`inline-flex min-h-12 items-center gap-1 px-3 text-sm ${
+                    active("/products") ? "text-ink" : "text-ink-soft"
                   }`}
+                  aria-expanded={productsOpen}
+                  aria-controls={productsId}
+                  onClick={() => setProductsOpen((value) => !value)}
                 >
-                  {link.label}
-                  {active && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C9A84C]" />
-                  )}
-                </Link>
-              );
-            })}
-            <div className="w-px h-5 bg-[#1A2D4A] mx-2" />
-            <Link
-              href="/contact"
-              className="btn-gold text-[#0B1120] text-[13px] font-semibold px-5 py-2 rounded-sm tracking-wide"
-            >
-              Request a Quote
-            </Link>
-          </nav>
-
-          {/* Mobile toggle */}
-          <button
-            className="md:hidden text-blue-200/60 hover:text-white transition-colors p-1"
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
-          >
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden bg-[#060D1A] border-t border-[#C9A84C]/15 px-4 pt-3 pb-5">
-          {navLinks.map((link) => {
-            const active = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
-
-            if (link.hasDropdown) {
-              return (
-                <div key={link.href}>
-                  <button
-                    onClick={() => setMobileProducts(!mobileProducts)}
-                    className={`flex items-center justify-between w-full py-3 text-sm border-b border-[#142035] transition-colors ${
-                      active ? "text-[#C9A84C]" : "text-blue-200/60"
-                    }`}
+                  Products
+                  <span aria-hidden="true" className="text-xs">
+                    {productsOpen ? "▴" : "▾"}
+                  </span>
+                </button>
+                {productsOpen ? (
+                  <div
+                    id={productsId}
+                    className="absolute left-0 top-full z-50 w-64 border border-line bg-card py-2 shadow-sm"
                   >
-                    <span className="flex items-center gap-2">
-                      {active && <span className="w-1 h-1 rounded-full bg-[#C9A84C]" />}
-                      {link.label}
-                    </span>
-                    <ChevronDown size={12} className={`transition-transform duration-200 ${mobileProducts ? "rotate-180" : ""}`} />
-                  </button>
-                  {mobileProducts && (
-                    <div className="pl-4 py-2 border-b border-[#142035] space-y-1">
-                      <Link href="/products" onClick={() => setOpen(false)} className="block py-2 text-[11px] text-[#C9A84C]/60 tracking-[0.2em] uppercase font-semibold">
-                        View All Products
+                    {productLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block min-h-11 px-4 py-2.5 text-sm text-ink hover:bg-paper"
+                        onClick={() => setProductsOpen(false)}
+                      >
+                        {item.label}
                       </Link>
-                      {productDropdown.map(({ href, label, icon: Icon }) => (
-                        <Link
-                          key={href}
-                          href={href}
-                          onClick={() => setOpen(false)}
-                          className="flex items-center gap-2 py-2 text-sm text-blue-200/60 hover:text-white transition-colors"
-                        >
-                          <Icon size={12} className="text-[#C9A84C]" />
-                          {label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            return (
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ) : (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-2 py-3 text-sm border-b border-[#142035] last:border-0 transition-colors ${
-                  active ? "text-[#C9A84C]" : "text-blue-200/60 hover:text-white"
+                className={`inline-flex min-h-12 items-center px-3 text-sm ${
+                  active(link.href) ? "text-ink underline decoration-chilli decoration-2 underline-offset-8" : "text-ink-soft"
                 }`}
-                onClick={() => setOpen(false)}
+                aria-current={pathname === link.href ? "page" : undefined}
               >
-                {active && <span className="w-1 h-1 rounded-full bg-[#C9A84C]" />}
                 {link.label}
               </Link>
-            );
-          })}
-          <Link
-            href="/contact"
-            className="mt-4 btn-gold block text-center text-[#0B1120] text-sm font-semibold px-5 py-2.5 rounded-sm tracking-wide"
-            onClick={() => setOpen(false)}
-          >
-            Get a Quote
+            ),
+          )}
+          <Link href={quoteHref()} className="btn ml-3 px-4 text-sm">
+            Request a quote
           </Link>
+        </nav>
+
+        <button
+          type="button"
+          className="inline-flex min-h-12 min-w-12 items-center justify-center border border-line px-3 text-sm font-semibold lg:hidden"
+          aria-expanded={open}
+          aria-controls={menuId}
+          onClick={() => setOpen(true)}
+        >
+          Menu
+        </button>
+      </div>
+
+      {open ? (
+        <div className="fixed inset-0 z-50 bg-paper lg:hidden" id={menuId}>
+          <div className="flex h-16 items-center justify-between border-b border-line px-5">
+            <p className="font-serif text-xl">Menu</p>
+            <button
+              ref={closeRef}
+              type="button"
+              className="inline-flex min-h-12 min-w-12 items-center justify-center border border-line text-sm font-semibold"
+              onClick={() => setOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+          <nav className="flex flex-col px-5 py-4" aria-label="Mobile">
+            {links
+              .filter((link) => link.href !== "/products")
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="border-b border-line py-4 text-lg"
+                  aria-current={pathname === link.href ? "page" : undefined}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            <p className="pb-1 pt-6 text-xs font-semibold uppercase tracking-[0.16em] text-muted">Products</p>
+            {productLinks.map((item) => (
+              <Link key={item.href} href={item.href} className="border-b border-line py-3 text-base">
+                {item.label}
+              </Link>
+            ))}
+            <Link href={quoteHref()} className="btn mt-6">
+              Request a quote
+            </Link>
+          </nav>
         </div>
-      )}
+      ) : null}
     </header>
   );
 }

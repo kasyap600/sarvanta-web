@@ -1,24 +1,31 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft, ArrowRight, CheckCircle, Package } from "lucide-react";
-import { products, getProductBySlug } from "@/lib/products";
-import MarqueeTicker from "@/components/MarqueeTicker";
-import PowderGrid from "@/components/PowderGrid";
-import Reveal from "@/components/Reveal";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import VegetableList from "@/components/VegetableList";
+import { Photo } from "@/components/Photo";
+import { getProductBySlug, products, type Product, type SpecRow } from "@/lib/products";
+import { pageMetadata } from "@/lib/seo";
+import { quoteHref, whatsappHref } from "@/lib/site";
 
-export async function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+export function generateStaticParams() {
+  return products.map((product) => ({ slug: product.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
   if (!product) return {};
-  return {
-    title: `${product.headline} — Sarvanta Global`,
-    description: product.description,
-  };
+  return pageMetadata({
+    title: product.name,
+    description: product.summary,
+    path: `/products/${product.slug}`,
+    image: product.image,
+    imageAlt: product.imageAlt,
+  });
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -26,277 +33,212 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
-  const hasGradeSpecs = product.grades.some((g) => g.specs);
+  const related = product.related
+    .map((item) => getProductBySlug(item))
+    .filter((item): item is Product => Boolean(item));
 
   return (
-    <div>
-      {/* Hero */}
-      <div
-        className="relative overflow-hidden"
-        style={{ background: "linear-gradient(145deg, #0B1120 0%, #080D1A 55%, #0B1530 100%)" }}
-      >
-        <div className="absolute inset-0 dot-pattern opacity-15" />
-        <div
-          className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-15 blur-[100px]"
-          style={{ background: product.heroColor }}
-        />
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
+    <article className="pb-24 lg:pb-0">
+      <div className="mx-auto max-w-6xl px-5 py-10 lg:py-14">
+        <p className="text-sm text-muted">
+          <Link href="/products" className="underline underline-offset-4">Products</Link>
+          <span aria-hidden="true"> / </span>
+          <Link href={product.category === "Spices" ? "/products/spices" : product.category === "Powders" ? "/products/powders" : "/products/dehydrated-vegetable-powders"} className="underline underline-offset-4">
+            {product.category}
+          </Link>
+        </p>
+        <header className="mt-4 max-w-3xl">
+          {product.priority ? (
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-chilli">Priority product</p>
+          ) : null}
+          <h1 className="mt-2 font-serif text-4xl leading-tight sm:text-5xl">{product.name}</h1>
+          <p className="mt-4 text-lg leading-relaxed text-ink-soft">{product.description}</p>
+        </header>
 
-        <span className="absolute right-0 top-1/2 -translate-y-1/2 font-[family-name:var(--font-cormorant)] text-[260px] font-bold text-white/4 select-none leading-none pr-8">
-          {product.name.charAt(0)}
-        </span>
+        <div className="mt-10 grid items-start gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <Photo
+              src={product.image}
+              alt={product.imageAlt}
+              credit={product.imageCredit}
+              sizes="(min-width: 1024px) 52vw, 100vw"
+              ratio="aspect-[4/5] sm:aspect-[4/3]"
+              preload
+            />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
-            <Reveal className="flex-1">
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-1.5 text-blue-200/40 hover:text-[#C9A84C] transition-colors text-xs tracking-wide mb-8"
-              >
-                <ArrowLeft size={12} /> Products
-              </Link>
-              <p className="text-[#C9A84C] text-[9px] tracking-[0.4em] uppercase font-semibold mb-3">
-                {product.category} · Origin: {product.origin}
-              </p>
-              <h1 className="font-[family-name:var(--font-cormorant)] text-5xl md:text-7xl font-semibold text-white mb-3 leading-tight">
-                {product.headline}
-              </h1>
-              <div className="ornament max-w-[180px] mb-5">
-                <span className="text-[#C9A84C]/60 text-xs">✦</span>
-              </div>
-              <p className="text-blue-200/40 text-sm mb-2 tracking-wide italic">{product.tagline}</p>
-              <p className="text-blue-200/50 max-w-2xl leading-relaxed text-sm mt-4">{product.description}</p>
-            </Reveal>
+            <section className="mt-12" aria-labelledby="spec-heading">
+              <h2 id="spec-heading" className="font-serif text-3xl">At a glance</h2>
+              <SpecTable rows={product.specs} caption={`${product.name} general facts`} />
+            </section>
 
-            {product.image && (
-              <Reveal direction="left" className="lg:w-80 xl:w-96 shrink-0">
-                <div className="relative w-full h-64 lg:h-80 overflow-hidden border border-[#C9A84C]/20">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1120]/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C]/60 to-transparent" />
-                </div>
-              </Reveal>
-            )}
-          </div>
-        </div>
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C]/30 to-transparent" />
-      </div>
-
-      <MarqueeTicker />
-
-      {/* Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
-          {/* Main col */}
-          <div className="lg:col-span-2 space-y-12">
-
-            {/* Grades */}
-            <Reveal>
-              <div>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl font-semibold text-[#0B1120] mb-2">
-                  Available {hasGradeSpecs ? "Varieties" : "Grades"}
-                </h2>
-                <div className="ornament max-w-[140px] mb-7">
-                  <span className="text-[#C9A84C]/50 text-xs">✦</span>
-                </div>
-                {slug === "dehydrated-vegetable-powders" ? (
-                  <PowderGrid />
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {product.grades.map((grade) => (
-                      <div
-                        key={grade.name}
-                        className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 hover:shadow-md transition-shadow duration-200"
-                      >
-                        <h3 className="font-semibold text-[#0B1120] text-sm leading-snug mb-2 flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] mt-1.5 shrink-0" />
-                          {grade.name}
-                        </h3>
-                        {grade.description && (
-                          <p className="text-[#0B1120]/50 text-xs leading-relaxed pl-3.5">{grade.description}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </Reveal>
-
-            {/* Comparison table */}
-            {hasGradeSpecs && (
-              <Reveal delay={0.1}>
-                <div>
-                  <h2 className="font-[family-name:var(--font-cormorant)] text-3xl font-semibold text-[#0B1120] mb-2">
-                    Product Specification Sheet
-                  </h2>
-                  <div className="ornament max-w-[140px] mb-7">
-                    <span className="text-[#C9A84C]/50 text-xs">✦</span>
-                  </div>
-                  <div className="border border-[#E8D5A0]/60 overflow-x-auto">
-                    <table className="w-full text-xs min-w-[600px]">
-                      <thead>
-                        <tr style={{ background: "linear-gradient(90deg, #0B1120, #0B1530)" }}>
-                          <th className="text-left px-5 py-3.5 font-semibold tracking-[0.1em] text-[#C9A84C] uppercase text-[10px]">
-                            Parameters
+            {product.varieties ? (
+              <section className="mt-12" aria-labelledby="variety-heading">
+                <h2 id="variety-heading" className="font-serif text-3xl">Varieties and specification table</h2>
+                <p className="mt-3 text-sm text-muted">
+                  Published figures for whole red chillies. A lot-specific sheet is available with the quote. Scroll sideways on a small screen to compare.
+                </p>
+                <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {product.varieties.map((variety) => (
+                    <li key={variety.name} className="border border-line bg-card p-4">
+                      <h3 className="font-semibold">{variety.name}</h3>
+                      <p className="mt-1 text-sm text-ink-soft">{variety.note}</p>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 overflow-x-auto border border-line">
+                  <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+                    <caption className="sr-only">Specification comparison for whole red chilli varieties</caption>
+                    <thead className="bg-ink text-paper">
+                      <tr>
+                        <th scope="col" className="px-3 py-3 font-semibold">Parameter</th>
+                        {product.varieties.map((variety) => (
+                          <th key={variety.name} scope="col" className="px-3 py-3 font-semibold">
+                            {variety.name}
                           </th>
-                          {product.grades.map((g) => (
-                            <th key={g.name} className="text-center px-4 py-3.5 font-semibold text-white tracking-wide whitespace-nowrap text-[10px]">
-                              {g.name}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Object.keys(product.grades[0].specs ?? {}).map((param, i) => (
-                          <tr
-                            key={param}
-                            className={`border-b border-[#E8D5A0]/40 transition-colors hover:bg-[#C9A84C]/5 ${
-                              i % 2 === 0 ? "bg-[#FAF5EE]/60" : "bg-white"
-                            }`}
-                          >
-                            <td className="px-5 py-3 font-semibold text-[#0B1120] text-[11px] tracking-wide">{param}</td>
-                            {product.grades.map((g) => (
-                              <td key={g.name} className="px-4 py-3 text-center text-[#0B1120]/60">
-                                {g.specs?.[param] ?? "—"}
-                              </td>
-                            ))}
-                          </tr>
                         ))}
-                      </tbody>
-                    </table>
-                    <p className="text-[#0B1120]/40 text-[10px] px-5 py-3 bg-[#FAF5EE]/40 border-t border-[#E8D5A0]/40">
-                      Note: Specifications are typical values. Actual values may vary slightly from lot to lot.
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            )}
-
-            {/* Specs */}
-            <Reveal delay={0.15}>
-              <div>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl font-semibold text-[#0B1120] mb-2">
-                  Product Specifications
-                </h2>
-                <div className="ornament max-w-[140px] mb-7">
-                  <span className="text-[#C9A84C]/50 text-xs">✦</span>
-                </div>
-                <div className="border border-[#E8D5A0]/60 overflow-hidden">
-                  <table className="w-full text-sm">
+                      </tr>
+                    </thead>
                     <tbody>
-                      {Object.entries(product.specs).map(([key, value], i) => (
-                        <tr
-                          key={key}
-                          className={`border-b border-[#E8D5A0]/40 last:border-0 hover:bg-[#C9A84C]/5 transition-colors ${
-                            i % 2 === 0 ? "bg-[#FAF5EE]/60" : "bg-white"
-                          }`}
-                        >
-                          <td className="px-6 py-3.5 font-semibold text-[#0B1120] text-xs tracking-[0.1em] uppercase w-52">{key}</td>
-                          <td className="px-6 py-3.5 text-[#0B1120]/60 text-sm">{value}</td>
+                      {product.varieties[0].specs.map((row, index) => (
+                        <tr key={row.label} className={index % 2 === 0 ? "bg-card" : "bg-paper"}>
+                          <th scope="row" className="px-3 py-2.5 font-medium">{row.label}</th>
+                          {product.varieties!.map((variety) => (
+                            <td key={variety.name} className="px-3 py-2.5">
+                              {variety.specs.find((spec) => spec.label === row.label)?.value ?? "—"}
+                            </td>
+                          ))}
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              </div>
-            </Reveal>
+              </section>
+            ) : null}
 
+            {product.grades.length > 0 ? (
+              <section className="mt-12" aria-labelledby="grades-heading">
+                <h2 id="grades-heading" className="font-serif text-3xl">Grades</h2>
+                <ul className="mt-4 divide-y divide-line border-y border-line">
+                  {product.grades.map((grade) => (
+                    <li key={grade.name} className="flex flex-col gap-1 py-3 sm:flex-row sm:justify-between">
+                      <span className="font-semibold">{grade.name}</span>
+                      {grade.note ? <span className="text-sm text-ink-soft">{grade.note}</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {product.powders ? (
+              <section className="mt-12" aria-labelledby="powders-heading">
+                <h2 id="powders-heading" className="font-serif text-3xl">The 13 powders</h2>
+                <div className="mt-4">
+                  <VegetableList powders={product.powders} />
+                </div>
+              </section>
+            ) : null}
+
+            <section className="mt-12" aria-labelledby="pack-heading">
+              <h2 id="pack-heading" className="font-serif text-3xl">Packing</h2>
+              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                {product.packaging.map((item) => (
+                  <li key={item} className="border border-line bg-card px-4 py-3 text-sm">{item}</li>
+                ))}
+              </ul>
+              <p className="mt-3 text-sm text-ink-soft">Private labelling is available on request.</p>
+            </section>
+
+            <section className="mt-12" aria-labelledby="uses-heading">
+              <h2 id="uses-heading" className="font-serif text-3xl">Who it is sold to</h2>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {product.uses.map((use) => (
+                  <li key={use} className="border border-line px-3 py-2 text-sm">{use}</li>
+                ))}
+              </ul>
+            </section>
+
+            {product.specsOnRequest ? (
+              <section className="mt-12 border border-dashed border-chilli/50 bg-card p-5" aria-labelledby="request-specs">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-chilli">On request</p>
+                <h2 id="request-specs" className="mt-2 font-serif text-3xl">Detailed specifications on request</h2>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  Curcumin, ASTA colour, SHU, mesh, moisture, and other lab figures are not published for {product.name} on this page. Ask for the specification sheet when you request a quote.
+                </p>
+              </section>
+            ) : null}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-5">
-
-            {product.qualityPoints.length > 0 && (
-              <Reveal direction="left" delay={0.1}>
-                <div className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase font-semibold text-[#0B1120] mb-5 flex items-center gap-2">
-                    <span className="w-4 h-px bg-[#C9A84C]" /> Quality Assurance
-                  </h3>
-                  <ul className="space-y-3">
-                    {product.qualityPoints.map((point) => (
-                      <li key={point} className="flex items-start gap-2.5 text-[#0B1120]/60 text-xs">
-                        <CheckCircle size={12} className="text-[#C9A84C] mt-0.5 shrink-0" />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            )}
-
-            {product.packaging.length > 0 && (
-              <Reveal direction="left" delay={0.2}>
-                <div className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase font-semibold text-[#0B1120] mb-5 flex items-center gap-2">
-                    <Package size={12} className="text-[#C9A84C]" /> Packaging Options
-                  </h3>
-                  <ul className="space-y-3">
-                    {product.packaging.map((p) => (
-                      <li key={p} className="flex items-start gap-2.5 text-[#0B1120]/60 text-xs">
-                        <span className="w-1 h-1 rounded-full bg-[#C9A84C] mt-1.5 shrink-0" />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            )}
-
-            {product.applications.length > 0 && (
-              <Reveal direction="left" delay={0.3}>
-                <div className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase font-semibold text-[#0B1120] mb-5 flex items-center gap-2">
-                    <span className="w-4 h-px bg-[#C9A84C]" /> Applications
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.applications.map((app) => (
-                      <span
-                        key={app}
-                        className="bg-[#FAF5EE] text-[#0B1120]/60 text-[10px] px-3 py-1.5 border border-[#E8D5A0] tracking-wide"
-                      >
-                        {app}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Reveal>
-            )}
-
-            <Reveal direction="left" delay={0.4}>
-              <div
-                className="relative p-7 overflow-hidden"
-                style={{ background: "linear-gradient(145deg, #0B1120, #0B1530)" }}
-              >
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
-                <div className="absolute inset-0 dot-pattern opacity-10" />
-                <div className="relative">
-                  <p className="text-[#C9A84C] text-[9px] tracking-[0.3em] uppercase font-semibold mb-2">Get a Quote</p>
-                  <h3 className="font-[family-name:var(--font-cormorant)] text-xl font-semibold text-white mb-2">
-                    Interested in {product.name}?
-                  </h3>
-                  <p className="text-blue-200/40 text-xs leading-relaxed mb-5">
-                    Send us your requirements and receive a detailed quote within 24 hours.
-                  </p>
-                  <Link
-                    href={`/contact?product=${product.slug}`}
-                    className="btn-gold flex items-center justify-center gap-2 text-[#0B1120] text-sm font-semibold px-5 py-2.5 rounded-sm tracking-wide w-full"
-                  >
-                    Request a Quote <ArrowRight size={13} />
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
-
-          </div>
+          <aside className="lg:col-span-5 lg:sticky lg:top-24">
+            <QuoteBox product={product} />
+          </aside>
         </div>
+
+        {related.length > 0 ? (
+          <section className="mt-16 border-t border-line pt-10" aria-labelledby="related-heading">
+            <h2 id="related-heading" className="font-serif text-3xl">Also supplied</h2>
+            <ul className="mt-4 divide-y divide-line border-y border-line">
+              {related.map((item) => (
+                <li key={item.slug} className="flex items-center justify-between gap-4 py-3">
+                  <Link href={`/products/${item.slug}`} className="font-medium underline decoration-line underline-offset-4">
+                    {item.name}
+                  </Link>
+                  <Link href={quoteHref(item.slug)} className="text-sm underline underline-offset-4">
+                    Quote
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
       </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+        <Link href={quoteHref(product.slug)} className="btn w-full">
+          Request a quote for {product.name}
+        </Link>
+      </div>
+    </article>
+  );
+}
+
+function QuoteBox({ product }: { product: Product }) {
+  return (
+    <div className="border border-line bg-card p-6">
+      <h2 className="font-serif text-3xl leading-tight">Request a quote for {product.name}</h2>
+      <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+        We reply within 24 hours. Samples are available. The form opens with {product.name} already selected.
+      </p>
+      <div className="mt-5 flex flex-col gap-3">
+        <Link href={quoteHref(product.slug)} className="btn">
+          Request a quote for this product
+        </Link>
+        <a
+          href={whatsappHref(`Hello Sarvanta Global, I would like a quote for ${product.name}.`)}
+          className="btn-line"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp about {product.name}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function SpecTable({ rows, caption }: { rows: SpecRow[]; caption: string }) {
+  return (
+    <div className="mt-4 overflow-hidden border border-line">
+      <table className="w-full text-left text-sm">
+        <caption className="sr-only">{caption}</caption>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={row.label} className={index % 2 === 0 ? "bg-card" : "bg-paper"}>
+              <th scope="row" className="w-2/5 px-4 py-3 font-medium">{row.label}</th>
+              <td className="px-4 py-3">{row.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
