@@ -19,7 +19,7 @@ export default function PowdersPage() {
           Products
         </Link>
       </p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{group.name}</h1>
+      <h1 className="mt-3 text-4xl leading-[1.02] sm:text-6xl">{group.name}</h1>
       <p className="mt-3 max-w-2xl text-ink-soft">{group.intro}</p>
       <div className="mt-8">
         <Catalogue only="herbal" />

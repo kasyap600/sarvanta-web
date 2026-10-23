@@ -14,8 +14,8 @@ export const metadata = pageMetadata({
 export default function ProductsPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-8 lg:py-10">
-      <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-forest">Catalogue</p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Product range</h1>
+      <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-accent">Catalogue</p>
+      <h1 className="mt-3 text-4xl leading-[1.02] sm:text-6xl">Product range</h1>
       <p className="mt-3 max-w-2xl text-ink-soft">
         {products.length} products, in three groups. Red chillies and turmeric, whole and ground, are the priority lines. Search by name, or filter by category. Request a quote for one product, or add several to a single enquiry.
       </p>

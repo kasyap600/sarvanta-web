@@ -42,7 +42,7 @@ export function Catalogue({ only }: { only?: CatalogueGroupId }) {
   return (
     <div className="lg:grid lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:items-start lg:gap-8">
       <div className="mb-6 lg:sticky lg:top-24 lg:mb-0">
-        <label htmlFor="catalogue-search" className="mb-1.5 block text-sm font-semibold">
+        <label htmlFor="catalogue-search" className="mb-2 block text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
           Search
         </label>
         <input
@@ -60,7 +60,7 @@ export function Catalogue({ only }: { only?: CatalogueGroupId }) {
             <CategoryLinks only={only} />
           ) : (
             <>
-              <label htmlFor="catalogue-category" className="mb-1.5 block text-sm font-semibold">
+              <label htmlFor="catalogue-category" className="mb-2 block text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
                 Category
               </label>
               <select
@@ -106,7 +106,7 @@ export function Catalogue({ only }: { only?: CatalogueGroupId }) {
 
       <div className="min-w-0">
         {slugs.length > 0 ? (
-          <p className="mb-4 border border-line bg-white px-4 py-3 text-sm">
+          <p className="mb-6 border-y border-ink py-3 text-sm">
             {slugs.length} {slugs.length === 1 ? "product" : "products"} in this enquiry.{" "}
             <Link href={href} className="font-semibold underline underline-offset-4">
               Open the quote form
@@ -118,21 +118,21 @@ export function Catalogue({ only }: { only?: CatalogueGroupId }) {
           {query ? ` matching “${search.trim()}”` : ""}
         </p>
         {sections.length === 0 ? (
-          <p className="mt-4 border border-line bg-white px-4 py-6 text-sm" role="status">
+          <p className="mt-6 border-y border-line py-8 text-sm" role="status">
             No product matches that search.
           </p>
         ) : (
           sections.map(({ group, items }) => (
             <section key={group.id} id={group.id} className="mt-6 first:mt-4" aria-labelledby={only ? undefined : `${group.id}-heading`}>
               {only ? null : (
-                <div className="mb-3 flex items-baseline justify-between gap-3 border-b border-line pb-2">
-                  <h2 id={`${group.id}-heading`} className="text-lg font-semibold">
+                <div className="mb-6 flex items-baseline justify-between gap-3 border-b border-ink pb-3">
+                  <h2 id={`${group.id}-heading`} className="text-3xl">
                     {group.name}
                   </h2>
                   <p className="text-sm text-muted">{items.length}</p>
                 </div>
               )}
-              <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <ul className="grid gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-3">
                 {items.map((product) => (
                   <li key={product.slug} className="h-full">
                     <ProductCard item={toCard(product, group.name)} />
@@ -163,7 +163,7 @@ function CategoryLinks({ only }: { only: CatalogueGroupId }) {
     <nav aria-label="Categories">
       <ul className="grid gap-1">
         <li>
-          <Link href="/products" className="flex min-h-11 items-center justify-between border border-line bg-white px-3 text-sm">
+          <Link href="/products" className="flex min-h-11 items-center justify-between border-b border-line px-1 text-sm">
             All products
             <span className="text-muted">{products.length}</span>
           </Link>
@@ -175,12 +175,12 @@ function CategoryLinks({ only }: { only: CatalogueGroupId }) {
               <Link
                 href={group.href}
                 aria-current={current ? "page" : undefined}
-                className={`flex min-h-11 items-center justify-between border px-3 text-left text-sm ${
-                  current ? "border-forest bg-forest font-semibold text-white" : "border-line bg-white text-ink"
+                className={`flex min-h-11 items-center justify-between border-b px-1 text-left text-sm ${
+                  current ? "border-ink font-medium text-ink" : "border-line text-ink-soft"
                 }`}
               >
                 {group.name}
-                <span className={current ? "text-white/80" : "text-muted"}>{productsIn(group.id).length}</span>
+                <span className="text-muted">{productsIn(group.id).length}</span>
               </Link>
             </li>
           );
@@ -208,13 +208,13 @@ function FilterButton({
     <button
       type="button"
       aria-pressed={selected}
-      className={`flex min-h-11 items-center justify-between border px-3 text-left text-sm ${
-        selected ? "border-forest bg-forest font-semibold text-white" : "border-line bg-white text-ink"
+      className={`flex min-h-11 items-center justify-between border-b px-1 text-left text-sm ${
+        selected ? "border-ink font-medium text-ink" : "border-line text-ink-soft"
       }`}
       onClick={() => onSelect(value)}
     >
       {children}
-      <span className={selected ? "text-white/80" : "text-muted"}>{count}</span>
+      <span className="text-muted">{count}</span>
     </button>
   );
 }

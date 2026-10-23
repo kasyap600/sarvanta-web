@@ -62,48 +62,55 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </Link>
         </p>
 
-        <header className="mt-4 grid grid-cols-[5.25rem_1fr] gap-x-4 gap-y-3 sm:grid-cols-[8rem_1fr]">
-          <div className="relative aspect-square bg-paper-deep">
-            <Image
-              src={product.image}
-              alt={product.imageAlt}
-              fill
-              sizes="(min-width: 640px) 128px, 84px"
-              className="object-cover"
-              preload
-            />
-          </div>
+        <header className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:items-start">
+          <figure>
+            <div className="relative aspect-[16/10] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
+              <Image
+                src={product.image}
+                alt={product.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 352px, 100vw"
+                className="object-cover"
+                preload
+              />
+            </div>
+            <figcaption className="mt-3 text-xs leading-relaxed text-muted">
+              {product.imageCaption ? <span className="block text-ink-soft">{product.imageCaption}</span> : null}
+              <PhotoCredit credit={product.imageCredit} as="p" />
+            </figcaption>
+          </figure>
           <div className="min-w-0">
             {product.priority ? (
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-accent">Priority product</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">Priority product</p>
             ) : null}
-            <h1 className="mt-1 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">{product.name}</h1>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft">{product.summary}</p>
+            <h1 className="mt-2 text-4xl leading-[1.02] sm:text-6xl">{product.name}</h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">{product.summary}</p>
+            <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-ink pt-5">
+              <Fact term="Form" value={supplyForm(product, "full")} />
+              <Fact term="Minimum order" value="On request" />
+              <Fact term="Sample" value="Available on request" />
+              <Fact term="Documents" value="Certificate of Analysis per lot" />
+            </dl>
+            <div className="mt-6 hidden flex-wrap items-center gap-3 lg:flex">
+              <Link href={quoteHref(product.slug)} className="btn">
+                Request a quote
+              </Link>
+              <AddToEnquiry slug={product.slug} name={product.name} />
+            </div>
             <a
               href={whatsappHref(`Hello Sarvanta Global, I would like a quote for ${product.name}.`)}
-              className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 lg:hidden"
+              className="mt-4 inline-flex min-h-11 items-center text-sm underline underline-offset-4 lg:hidden"
             >
               WhatsApp about {product.name}
             </a>
           </div>
-          <div className="col-span-2">
-            {product.imageCaption ? <p className="text-sm leading-snug text-ink-soft">{product.imageCaption}</p> : null}
-            <PhotoCredit credit={product.imageCredit} as="p" />
-          </div>
         </header>
 
-        <dl className="mt-6 grid grid-cols-2 gap-px border border-line bg-line lg:grid-cols-4">
-          <Fact term="Form" value={supplyForm(product, "full")} />
-          <Fact term="Minimum order" value="On request" />
-          <Fact term="Sample" value="Available on request" />
-          <Fact term="Documents" value="Certificate of Analysis per lot" />
-        </dl>
-
-        <div className="sticky top-16 z-30 mt-6 hidden border border-line bg-white px-4 py-2.5 lg:flex lg:items-center lg:justify-between lg:gap-4">
-          <p className="truncate text-sm font-semibold">{product.name}</p>
-          <div className="flex shrink-0 items-center gap-2">
+        <div className="sticky top-16 z-30 mt-10 hidden items-center justify-between gap-4 border-y border-ink bg-paper py-3 lg:flex">
+          <p className="truncate font-serif text-2xl">{product.name}</p>
+          <div className="flex shrink-0 items-center gap-3">
             <AddToEnquiry slug={product.slug} name={product.name} />
-            <Link href={quoteHref(product.slug)} className="btn px-4 text-sm">
+            <Link href={quoteHref(product.slug)} className="btn">
               Request a quote
             </Link>
           </div>
@@ -111,19 +118,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         {varieties ? (
           <section className="mt-6 min-w-0" aria-labelledby="variety-heading">
-            <h2 id="variety-heading" className="text-xl font-semibold tracking-tight">
+            <h2 id="variety-heading" className="text-3xl sm:text-4xl">
               Varieties and specification table
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">{product.description}</p>
             <p className="mt-2 text-sm text-muted">
               Published figures for whole red chillies, as they appear on the existing catalogue. Scroll sideways on a small screen to compare.
             </p>
-            <div className="mt-4 max-w-full overflow-x-auto border border-line">
+            <div className="mt-6 max-w-full overflow-x-auto">
               <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                 <caption className="sr-only">Specification comparison for whole red chilli varieties</caption>
-                <thead className="bg-forest text-white">
+                <thead className="border-b border-ink text-[11px] uppercase tracking-[0.14em]">
                   <tr>
-                    <th scope="col" className="px-3 py-3 font-medium">
+                    <th scope="col" className="py-3 pr-4 font-medium">
                       Parameter
                     </th>
                     {varieties.map((variety) => (
@@ -134,13 +141,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   </tr>
                 </thead>
                 <tbody>
-                  {varieties[0].specs.map((row, index) => (
-                    <tr key={row.label} className={index % 2 === 0 ? "bg-white" : "bg-paper"}>
-                      <th scope="row" className="px-3 py-2.5 align-top font-medium">
+                  {varieties[0].specs.map((row) => (
+                    <tr key={row.label} className="border-b border-line">
+                      <th scope="row" className="py-3 pr-4 align-top font-medium">
                         {row.label}
                       </th>
                       {varieties.map((variety) => (
-                        <td key={variety.name} className="px-3 py-2.5 align-top">
+                        <td key={variety.name} className="px-3 py-3 align-top">
                           {variety.specs.find((spec) => spec.label === row.label)?.value ?? "—"}
                         </td>
                       ))}
@@ -150,11 +157,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </table>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted">{specNotes.catalogue}</p>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            <ul className="mt-8 grid gap-8 sm:grid-cols-2">
               {varieties.map((variety) => (
-                <li key={variety.name} className="border border-line bg-white p-4">
-                  <h3 className="font-semibold">{variety.name}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-soft">{variety.note}</p>
+                <li key={variety.name}>
+                  <h3 className="font-serif text-2xl">{variety.name}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{variety.note}</p>
                 </li>
               ))}
             </ul>
@@ -163,7 +170,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         {product.tables.map((table) => (
           <section key={table.title} className="mt-8 min-w-0">
-            <h2 className="text-xl font-semibold tracking-tight">{table.title}</h2>
+            <h2 className="text-3xl sm:text-4xl">{table.title}</h2>
             <SpecTable rows={table.rows} caption={table.title} />
             <SpecNote table={table} />
           </section>
@@ -173,7 +180,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         {product.grades.length > 0 ? (
           <section className="mt-8" aria-labelledby="grades-heading">
-            <h2 id="grades-heading" className="text-xl font-semibold tracking-tight">
+            <h2 id="grades-heading" className="text-3xl sm:text-4xl">
               Grades
             </h2>
             <ul className="mt-3 divide-y divide-line border-y border-line">
@@ -188,12 +195,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         ) : null}
 
         <section className="mt-8" aria-labelledby="pack-heading">
-          <h2 id="pack-heading" className="text-xl font-semibold tracking-tight">
+          <h2 id="pack-heading" className="text-3xl sm:text-4xl">
             Packing
           </h2>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          <ul className="mt-4 divide-y divide-line border-y border-line">
             {product.packaging.map((item) => (
-              <li key={item} className="border border-line bg-white px-3 py-2.5 text-sm">
+              <li key={item} className="py-3 text-sm">
                 {item}
               </li>
             ))}
@@ -204,7 +211,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </section>
 
         <section className="mt-8" aria-labelledby="uses-heading">
-          <h2 id="uses-heading" className="text-xl font-semibold tracking-tight">
+          <h2 id="uses-heading" className="text-3xl sm:text-4xl">
             Who it is sold to
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">{product.uses.join(" · ")}</p>
@@ -230,13 +237,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         {related.length > 0 ? (
           <section className="mt-10 border-t border-line pt-8" aria-labelledby="related-heading">
-            <h2 id="related-heading" className="text-xl font-semibold tracking-tight">
+            <h2 id="related-heading" className="text-3xl sm:text-4xl">
               Also supplied
             </h2>
             <ul className="mt-3 divide-y divide-line border-y border-line">
               {related.map((item) => (
                 <li key={item.slug} className="flex flex-wrap items-center justify-between gap-3 py-3">
-                  <Link href={`/products/${item.slug}`} className="font-semibold underline decoration-line underline-offset-4">
+                  <Link href={`/products/${item.slug}`} className="font-serif text-2xl underline decoration-line underline-offset-4">
                     {item.name}
                   </Link>
                   <Link href={quoteHref(item.slug)} className="text-sm font-semibold underline underline-offset-4">
@@ -249,7 +256,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         ) : null}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink bg-paper p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
         <div className="mx-auto flex max-w-6xl items-center gap-2">
           <Link href={quoteHref(product.slug)} className="btn flex-1 text-sm">
             Request a quote
@@ -263,8 +270,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
 function Fact({ term, value }: { term: string; value: string }) {
   return (
-    <div className="bg-white px-4 py-3">
-      <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">{term}</dt>
+    <div>
+      <dt className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted">{term}</dt>
       <dd className="mt-1 text-sm leading-snug">{value}</dd>
     </div>
   );
@@ -281,26 +288,26 @@ function SpecNote({ table }: { table: SpecTable }) {
 
 function SpecTable({ rows, caption }: { rows: SpecRow[]; caption: string }) {
   return (
-    <div className="mt-3 max-w-full overflow-x-auto border border-line">
+    <div className="mt-5 max-w-full overflow-x-auto">
       <table className="w-full min-w-[18rem] text-left text-sm">
         <caption className="sr-only">{caption}</caption>
-        <thead className="bg-forest text-white">
+        <thead className="border-b border-ink text-[11px] uppercase tracking-[0.14em]">
           <tr>
-            <th scope="col" className="w-2/5 px-3 py-2.5 font-medium">
+            <th scope="col" className="w-2/5 py-3 pr-4 font-medium">
               Parameter
             </th>
-            <th scope="col" className="px-3 py-2.5 font-medium">
+            <th scope="col" className="py-3 font-medium">
               Specification
             </th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, index) => (
-            <tr key={row.label} className={index % 2 === 0 ? "bg-white" : "bg-paper"}>
-              <th scope="row" className="px-3 py-2.5 align-top font-medium">
+          {rows.map((row) => (
+            <tr key={row.label} className="border-b border-line">
+              <th scope="row" className="py-3 pr-4 align-top font-medium">
                 {row.label}
               </th>
-              <td className="px-3 py-2.5 align-top">{row.value}</td>
+              <td className="py-3 align-top">{row.value}</td>
             </tr>
           ))}
         </tbody>

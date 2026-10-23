@@ -69,18 +69,18 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-forest text-[13px] text-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-2">
+      <div className="border-b border-line bg-paper">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-2 text-[11px] uppercase tracking-[0.16em] text-muted">
           <p className="truncate">{site.location} · IEC and GST registered</p>
-          <a className="shrink-0 font-medium underline decoration-white/40 underline-offset-2" href={`tel:${site.phoneTel}`}>
+          <a className="shrink-0 text-ink" href={`tel:${site.phoneTel}`}>
             {site.phoneDisplay}
           </a>
         </div>
       </div>
-      <header className="sticky top-0 z-40 border-b border-line bg-white">
+      <header className="sticky top-0 z-40 border-b border-line bg-paper">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
           <Link href="/" className="shrink-0" aria-label="Sarvanta Global, home">
-            <Image src="/images/logo-transparent.png" alt="" width={1919} height={575} className="h-9 w-auto" preload />
+            <Image src="/images/logo-transparent.png" alt="" width={1919} height={575} className="h-10 w-auto" preload />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
@@ -102,7 +102,7 @@ export default function Navbar() {
                     </span>
                   </button>
                   {productsOpen ? (
-                    <div id={productsId} className="absolute left-0 top-full z-50 max-h-[70vh] w-80 overflow-y-auto border border-line bg-white py-2">
+                    <div id={productsId} className="absolute left-0 top-full z-50 max-h-[70vh] w-80 overflow-y-auto border border-line bg-card py-2">
                       <ProductMenu onNavigate={() => setProductsPath(null)} />
                     </div>
                   ) : null}
@@ -132,7 +132,7 @@ export default function Navbar() {
             {enquiry}
             <button
               type="button"
-              className="inline-flex min-h-12 min-w-12 items-center justify-center border border-line bg-white px-3 text-sm font-semibold"
+              className="inline-flex min-h-12 items-center justify-center px-1 text-[11px] font-medium uppercase tracking-[0.16em]"
               aria-expanded={open}
               aria-controls={menuId}
               onClick={() => setMenuPath(pathname)}
@@ -144,12 +144,12 @@ export default function Navbar() {
 
         {open ? (
           <div className="fixed inset-0 z-50 bg-paper lg:hidden" id={menuId}>
-            <div className="flex h-16 items-center justify-between border-b border-line bg-white px-5">
-              <p className="text-lg font-semibold">Menu</p>
+            <div className="flex h-16 items-center justify-between border-b border-line px-5">
+              <p className="font-serif text-2xl">Menu</p>
               <button
                 ref={closeRef}
                 type="button"
-                className="inline-flex min-h-12 min-w-12 items-center justify-center border border-line text-sm font-semibold"
+                className="inline-flex min-h-12 items-center justify-center text-[11px] font-medium uppercase tracking-[0.16em]"
                 onClick={() => setMenuPath(null)}
               >
                 Close

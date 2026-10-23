@@ -108,8 +108,8 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="border border-line bg-white p-6 sm:p-8" role="status">
-        <h2 className="text-xl font-semibold">Enquiry received</h2>
+      <div className="border-t border-ink pt-8" role="status">
+        <h2 className="text-4xl">Enquiry received</h2>
         <p className="mt-3 text-ink-soft">
           Thank you. We will reply within 24 hours with price and availability. Samples can be arranged from there.
         </p>
@@ -118,8 +118,8 @@ export default function ContactForm() {
   }
 
   return (
-    <form id="enquiry-form" onSubmit={handleSubmit(onSubmit)} noValidate className="border border-line bg-white p-5 sm:p-8">
-      <h2 className="text-lg font-semibold">Quote form</h2>
+    <form id="enquiry-form" onSubmit={handleSubmit(onSubmit)} noValidate className="border-t border-ink pt-8">
+      <h2 className="text-3xl">Quote form</h2>
       <p className="mt-2 text-sm text-muted">Fields marked * are required. We reply within 24 hours.</p>
 
       {preset && preset !== "multiple" ? (
@@ -127,7 +127,7 @@ export default function ContactForm() {
       ) : null}
 
       {listed.length > 0 ? (
-        <div className="mt-4 border border-line bg-paper px-4 py-3">
+        <div className="mt-6 border-y border-line py-4">
           <p className="text-sm font-semibold">Products in this enquiry</p>
           <ul className="mt-2 space-y-2 text-sm">
             {listed.map((slug) => (
@@ -279,7 +279,7 @@ function Field({
   const errorId = `${name}-error`;
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-semibold">
+      <label htmlFor={name} className="mb-2 block text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
         {label}
         {required ? <span className="text-danger"> *</span> : null}
       </label>

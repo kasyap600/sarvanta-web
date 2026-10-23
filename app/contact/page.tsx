@@ -12,10 +12,11 @@ export const metadata = pageMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-12 lg:py-10">
+    <div className="mx-auto grid max-w-6xl gap-12 px-5 py-10 lg:grid-cols-12 lg:py-16">
       <div className="min-w-0 lg:col-span-7">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Request a quote</h1>
-        <p className="mt-3 text-ink-soft">
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-accent">{site.location}</p>
+        <h1 className="mt-3 text-4xl leading-[1.02] sm:text-6xl">Request a quote</h1>
+        <p className="mt-4 max-w-xl text-ink-soft">
           Tell us the product and the quantity. We reply within 24 hours. If you opened this page from a product, that product is already selected. If you added several products, they are listed on the form.
         </p>
         <div className="mt-6">
@@ -25,8 +26,8 @@ export default function ContactPage() {
         </div>
       </div>
       <aside className="lg:col-span-5">
-        <div className="border border-line bg-white p-5 lg:sticky lg:top-24">
-          <h2 className="text-lg font-semibold">Talk to us directly</h2>
+        <div className="border-t border-ink pt-6 lg:sticky lg:top-24">
+          <h2 className="text-3xl">Talk to us directly</h2>
           <ul className="mt-4 space-y-4 text-sm">
             <li>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Phone</p>

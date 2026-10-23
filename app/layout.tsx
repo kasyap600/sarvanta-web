@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppButton";
 import { EnquiryProvider } from "@/components/enquiry";
 import { site } from "@/lib/site";
+
+const display = Cormorant_Garamond({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 const plex = IBM_Plex_Sans({
   weight: "variable",
@@ -54,7 +61,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${plex.variable} ${plexMono.variable} h-full`}>
+    <html lang="en" className={`${display.variable} ${plex.variable} ${plexMono.variable} h-full`}>
       <body className="flex min-h-full flex-col bg-paper font-sans text-ink antialiased">
         <EnquiryProvider>
           <a

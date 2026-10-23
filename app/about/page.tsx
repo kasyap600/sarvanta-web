@@ -14,8 +14,8 @@ export const metadata = pageMetadata({
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-8 lg:py-12">
-      <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-forest">{site.location}</p>
-      <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+      <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-accent">{site.location}</p>
+      <h1 className="mt-3 text-4xl leading-[1.02] sm:text-6xl">
         A Bangalore trading company for Indian spices and agri commodities.
       </h1>
       <div className="mt-5 space-y-4 leading-relaxed text-ink-soft">
@@ -29,7 +29,7 @@ export default function AboutPage() {
           The sales path is an enquiry, a quote within 24 hours, a sample if you want one, and then the order. The company is IEC registered and GST registered. The numbers themselves are still to be added.
         </p>
       </div>
-      <dl className="mt-8 border border-line bg-white text-sm">
+      <dl className="mt-10 border-t border-ink text-sm">
         <Row term="IEC" value="Registered." pending="IEC number to be added" />
         <Row term="GST" value="Registered." pending="GSTIN to be added" />
         <Row term="Location" value={site.location} />
@@ -68,8 +68,8 @@ export default function AboutPage() {
 
 function Row({ term, value, pending }: { term: string; value: ReactNode; pending?: string }) {
   return (
-    <div className="grid gap-1 border-b border-line px-4 py-3 last:border-b-0 sm:grid-cols-3">
-      <dt className="font-semibold">{term}</dt>
+    <div className="grid gap-1 border-b border-line py-4 sm:grid-cols-3">
+      <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">{term}</dt>
       <dd className="sm:col-span-2">
         {value} {pending ? <span className="font-mono text-accent">{pending}</span> : null}
       </dd>

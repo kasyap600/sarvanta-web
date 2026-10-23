@@ -4,16 +4,16 @@ import { site, whatsappHref } from "@/lib/site";
 
 export default function Footer() {
   return (
-    <footer className="border-t-4 border-forest bg-white text-ink">
+    <footer className="border-t border-ink bg-card text-ink">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:grid-cols-2 lg:grid-cols-12">
         <div className="lg:col-span-3">
-          <p className="text-lg font-semibold">Sarvanta Global</p>
+          <p className="font-serif text-3xl font-medium leading-none">Sarvanta Global</p>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             B2B sourcing and trading of Indian spices and agri commodities. Based in {site.location}.
           </p>
         </div>
         <div className="lg:col-span-2">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Pages</h2>
+          <h2 className="font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Pages</h2>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link className="underline decoration-line underline-offset-4" href="/">Home</Link></li>
             <li><Link className="underline decoration-line underline-offset-4" href="/products">Products</Link></li>
@@ -27,7 +27,7 @@ export default function Footer() {
           </ul>
         </div>
         <div className="sm:col-span-2 lg:col-span-4">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Products</h2>
+          <h2 className="font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Products</h2>
           <div className="mt-3 grid gap-6 sm:grid-cols-3">
             {catalogueGroups.map((group) => (
               <div key={group.id}>
@@ -48,7 +48,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="lg:col-span-3">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Contact</h2>
+          <h2 className="font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Contact</h2>
           <ul className="mt-3 space-y-2 text-sm">
             <li><a className="underline decoration-line underline-offset-4" href={`tel:${site.phoneTel}`}>{site.phoneDisplay}</a></li>
             <li>
