@@ -1,24 +1,41 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, CheckCircle, Package } from "lucide-react";
-import { products, getProductBySlug } from "@/lib/products";
-import MarqueeTicker from "@/components/MarqueeTicker";
-import PowderGrid from "@/components/PowderGrid";
-import Reveal from "@/components/Reveal";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { AddToEnquiry } from "@/components/AddToEnquiry";
+import { PhotoCredit } from "@/components/Photo";
+import { supplyForm } from "@/lib/display";
+import {
+  getProductBySlug,
+  groupById,
+  products,
+  specNotes,
+  type Product,
+  type SpecRow,
+  type SpecTable,
+} from "@/lib/products";
+import { pageMetadata } from "@/lib/seo";
+import { quoteHref, whatsappHref } from "@/lib/site";
 
-export async function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+export function generateStaticParams() {
+  return products.map((product) => ({ slug: product.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
   if (!product) return {};
-  return {
-    title: `${product.headline} — Sarvanta Global`,
-    description: product.description,
-  };
+  return pageMetadata({
+    title: product.name,
+    description: product.summary,
+    path: `/products/${product.slug}`,
+    image: product.image,
+    imageAlt: product.imageAlt,
+  });
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -26,277 +43,269 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
-  const hasGradeSpecs = product.grades.some((g) => g.specs);
+  const group = groupById(product.category);
+  const related = product.related
+    .map((item) => getProductBySlug(item))
+    .filter((item): item is Product => Boolean(item));
+  const varieties = product.varieties;
 
   return (
-    <div>
-      {/* Hero */}
-      <div
-        className="relative overflow-hidden"
-        style={{ background: "linear-gradient(145deg, #0B1120 0%, #080D1A 55%, #0B1530 100%)" }}
-      >
-        <div className="absolute inset-0 dot-pattern opacity-15" />
-        <div
-          className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-15 blur-[100px]"
-          style={{ background: product.heroColor }}
-        />
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
+    <article className="pb-28 lg:pb-0">
+      <div className="mx-auto min-w-0 max-w-6xl px-5 py-8 lg:py-10">
+        <p className="text-sm text-muted">
+          <Link href="/products" className="underline underline-offset-4">
+            Products
+          </Link>
+          <span aria-hidden="true"> / </span>
+          <Link href={group.href} className="underline underline-offset-4">
+            {group.name}
+          </Link>
+        </p>
 
-        <span className="absolute right-0 top-1/2 -translate-y-1/2 font-[family-name:var(--font-cormorant)] text-[260px] font-bold text-white/4 select-none leading-none pr-8">
-          {product.name.charAt(0)}
-        </span>
+        <header className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:items-start">
+          <figure>
+            <div className="relative aspect-[2/1] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
+              <Image
+                src={product.image}
+                alt={product.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 352px, 100vw"
+                className="object-cover"
+                preload
+              />
+            </div>
+            <figcaption className="mt-3 text-xs leading-relaxed text-muted">
+              {product.imageCaption ? <span className="block text-ink-soft">{product.imageCaption}</span> : null}
+              <PhotoCredit credit={product.imageCredit} as="p" />
+            </figcaption>
+          </figure>
+          <div className="min-w-0">
+            {product.priority ? (
+              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">Priority product</p>
+            ) : null}
+            <h1 className="mt-2 text-4xl leading-[1.02] sm:text-6xl">{product.name}</h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft">{product.summary}</p>
+            <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-ink pt-5">
+              <Fact term="Form" value={supplyForm(product, "full")} />
+              <Fact term="Minimum order" value="On request" />
+              <Fact term="Sample" value="Available on request" />
+              <Fact term="Documents" value="Certificate of Analysis per lot" />
+            </dl>
+            <a
+              href={whatsappHref(`Hello Sarvanta Global, I would like a quote for ${product.name}.`)}
+              className="mt-4 inline-flex min-h-11 items-center text-sm underline underline-offset-4 lg:hidden"
+            >
+              WhatsApp about {product.name}
+            </a>
+          </div>
+        </header>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
-            <Reveal className="flex-1">
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-1.5 text-blue-200/40 hover:text-[#C9A84C] transition-colors text-xs tracking-wide mb-8"
-              >
-                <ArrowLeft size={12} /> Products
-              </Link>
-              <p className="text-[#C9A84C] text-[9px] tracking-[0.4em] uppercase font-semibold mb-3">
-                {product.category} · Origin: {product.origin}
-              </p>
-              <h1 className="font-[family-name:var(--font-cormorant)] text-5xl md:text-7xl font-semibold text-white mb-3 leading-tight">
-                {product.headline}
-              </h1>
-              <div className="ornament max-w-[180px] mb-5">
-                <span className="text-[#C9A84C]/60 text-xs">✦</span>
-              </div>
-              <p className="text-blue-200/40 text-sm mb-2 tracking-wide italic">{product.tagline}</p>
-              <p className="text-blue-200/50 max-w-2xl leading-relaxed text-sm mt-4">{product.description}</p>
-            </Reveal>
-
-            {product.image && (
-              <Reveal direction="left" className="lg:w-80 xl:w-96 shrink-0">
-                <div className="relative w-full h-64 lg:h-80 overflow-hidden border border-[#C9A84C]/20">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1120]/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C]/60 to-transparent" />
-                </div>
-              </Reveal>
-            )}
+        <div className="sticky top-16 z-30 mt-10 hidden items-center justify-between gap-4 border-y border-ink bg-paper py-3 lg:flex">
+          <p className="truncate font-serif text-2xl">{product.name}</p>
+          <div className="flex shrink-0 items-center gap-3">
+            <AddToEnquiry slug={product.slug} name={product.name} />
+            <Link href={quoteHref(product.slug)} className="btn">
+              Request a quote
+            </Link>
           </div>
         </div>
-        <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C]/30 to-transparent" />
-      </div>
 
-      <MarqueeTicker />
-
-      {/* Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
-          {/* Main col */}
-          <div className="lg:col-span-2 space-y-12">
-
-            {/* Grades */}
-            <Reveal>
-              <div>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl font-semibold text-[#0B1120] mb-2">
-                  Available {hasGradeSpecs ? "Varieties" : "Grades"}
-                </h2>
-                <div className="ornament max-w-[140px] mb-7">
-                  <span className="text-[#C9A84C]/50 text-xs">✦</span>
-                </div>
-                {slug === "dehydrated-vegetable-powders" ? (
-                  <PowderGrid />
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {product.grades.map((grade) => (
-                      <div
-                        key={grade.name}
-                        className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 hover:shadow-md transition-shadow duration-200"
-                      >
-                        <h3 className="font-semibold text-[#0B1120] text-sm leading-snug mb-2 flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] mt-1.5 shrink-0" />
-                          {grade.name}
-                        </h3>
-                        {grade.description && (
-                          <p className="text-[#0B1120]/50 text-xs leading-relaxed pl-3.5">{grade.description}</p>
-                        )}
-                      </div>
+        {varieties ? (
+          <section className="mt-6 min-w-0" aria-labelledby="variety-heading">
+            <h2 id="variety-heading" className="text-3xl sm:text-4xl">
+              Varieties and specification table
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{product.description}</p>
+            <p className="mt-2 text-sm text-muted">
+              Published figures for whole red chillies, as they appear on the existing catalogue. Scroll sideways on a small screen to compare.
+            </p>
+            <div className="mt-6 max-w-full overflow-x-auto">
+              <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+                <caption className="sr-only">Specification comparison for whole red chilli varieties</caption>
+                <thead className="border-b border-ink text-[11px] uppercase tracking-[0.14em]">
+                  <tr>
+                    <th scope="col" className="py-3 pr-4 font-medium">
+                      Parameter
+                    </th>
+                    {varieties.map((variety) => (
+                      <th key={variety.name} scope="col" className="px-3 py-3 font-medium">
+                        {variety.name}
+                      </th>
                     ))}
-                  </div>
-                )}
-              </div>
-            </Reveal>
-
-            {/* Comparison table */}
-            {hasGradeSpecs && (
-              <Reveal delay={0.1}>
-                <div>
-                  <h2 className="font-[family-name:var(--font-cormorant)] text-3xl font-semibold text-[#0B1120] mb-2">
-                    Product Specification Sheet
-                  </h2>
-                  <div className="ornament max-w-[140px] mb-7">
-                    <span className="text-[#C9A84C]/50 text-xs">✦</span>
-                  </div>
-                  <div className="border border-[#E8D5A0]/60 overflow-x-auto">
-                    <table className="w-full text-xs min-w-[600px]">
-                      <thead>
-                        <tr style={{ background: "linear-gradient(90deg, #0B1120, #0B1530)" }}>
-                          <th className="text-left px-5 py-3.5 font-semibold tracking-[0.1em] text-[#C9A84C] uppercase text-[10px]">
-                            Parameters
-                          </th>
-                          {product.grades.map((g) => (
-                            <th key={g.name} className="text-center px-4 py-3.5 font-semibold text-white tracking-wide whitespace-nowrap text-[10px]">
-                              {g.name}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Object.keys(product.grades[0].specs ?? {}).map((param, i) => (
-                          <tr
-                            key={param}
-                            className={`border-b border-[#E8D5A0]/40 transition-colors hover:bg-[#C9A84C]/5 ${
-                              i % 2 === 0 ? "bg-[#FAF5EE]/60" : "bg-white"
-                            }`}
-                          >
-                            <td className="px-5 py-3 font-semibold text-[#0B1120] text-[11px] tracking-wide">{param}</td>
-                            {product.grades.map((g) => (
-                              <td key={g.name} className="px-4 py-3 text-center text-[#0B1120]/60">
-                                {g.specs?.[param] ?? "—"}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    <p className="text-[#0B1120]/40 text-[10px] px-5 py-3 bg-[#FAF5EE]/40 border-t border-[#E8D5A0]/40">
-                      Note: Specifications are typical values. Actual values may vary slightly from lot to lot.
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            )}
-
-            {/* Specs */}
-            <Reveal delay={0.15}>
-              <div>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl font-semibold text-[#0B1120] mb-2">
-                  Product Specifications
-                </h2>
-                <div className="ornament max-w-[140px] mb-7">
-                  <span className="text-[#C9A84C]/50 text-xs">✦</span>
-                </div>
-                <div className="border border-[#E8D5A0]/60 overflow-hidden">
-                  <table className="w-full text-sm">
-                    <tbody>
-                      {Object.entries(product.specs).map(([key, value], i) => (
-                        <tr
-                          key={key}
-                          className={`border-b border-[#E8D5A0]/40 last:border-0 hover:bg-[#C9A84C]/5 transition-colors ${
-                            i % 2 === 0 ? "bg-[#FAF5EE]/60" : "bg-white"
-                          }`}
-                        >
-                          <td className="px-6 py-3.5 font-semibold text-[#0B1120] text-xs tracking-[0.1em] uppercase w-52">{key}</td>
-                          <td className="px-6 py-3.5 text-[#0B1120]/60 text-sm">{value}</td>
-                        </tr>
+                  </tr>
+                </thead>
+                <tbody>
+                  {varieties[0].specs.map((row) => (
+                    <tr key={row.label} className="border-b border-line">
+                      <th scope="row" className="py-3 pr-4 align-top font-medium">
+                        {row.label}
+                      </th>
+                      {varieties.map((variety) => (
+                        <td key={variety.name} className="px-3 py-3 align-top">
+                          {variety.specs.find((spec) => spec.label === row.label)?.value ?? "—"}
+                        </td>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </Reveal>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{specNotes.catalogue}</p>
+            <ul className="mt-8 grid gap-8 sm:grid-cols-2">
+              {varieties.map((variety) => (
+                <li key={variety.name}>
+                  <h3 className="font-serif text-2xl">{variety.name}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{variety.note}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
-          </div>
+        {product.tables.map((table) => (
+          <section key={table.title} className="mt-8 min-w-0">
+            <h2 className="text-3xl sm:text-4xl">{table.title}</h2>
+            <SpecTable rows={table.rows} caption={table.title} />
+            <SpecNote table={table} />
+          </section>
+        ))}
 
-          {/* Sidebar */}
-          <div className="space-y-5">
+        {varieties ? null : <p className="mt-6 text-base leading-relaxed text-ink-soft">{product.description}</p>}
 
-            {product.qualityPoints.length > 0 && (
-              <Reveal direction="left" delay={0.1}>
-                <div className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase font-semibold text-[#0B1120] mb-5 flex items-center gap-2">
-                    <span className="w-4 h-px bg-[#C9A84C]" /> Quality Assurance
-                  </h3>
-                  <ul className="space-y-3">
-                    {product.qualityPoints.map((point) => (
-                      <li key={point} className="flex items-start gap-2.5 text-[#0B1120]/60 text-xs">
-                        <CheckCircle size={12} className="text-[#C9A84C] mt-0.5 shrink-0" />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            )}
+        {product.grades.length > 0 ? (
+          <section className="mt-8" aria-labelledby="grades-heading">
+            <h2 id="grades-heading" className="text-3xl sm:text-4xl">
+              Grades
+            </h2>
+            <ul className="mt-3 divide-y divide-line border-y border-line">
+              {product.grades.map((grade) => (
+                <li key={grade.name} className="py-3">
+                  <p className="font-semibold">{grade.name}</p>
+                  {grade.note ? <p className="mt-1 text-sm text-ink-soft">{grade.note}</p> : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
-            {product.packaging.length > 0 && (
-              <Reveal direction="left" delay={0.2}>
-                <div className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase font-semibold text-[#0B1120] mb-5 flex items-center gap-2">
-                    <Package size={12} className="text-[#C9A84C]" /> Packaging Options
-                  </h3>
-                  <ul className="space-y-3">
-                    {product.packaging.map((p) => (
-                      <li key={p} className="flex items-start gap-2.5 text-[#0B1120]/60 text-xs">
-                        <span className="w-1 h-1 rounded-full bg-[#C9A84C] mt-1.5 shrink-0" />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            )}
+        <section className="mt-8" aria-labelledby="pack-heading">
+          <h2 id="pack-heading" className="text-3xl sm:text-4xl">
+            Packing
+          </h2>
+          <ul className="mt-4 divide-y divide-line border-y border-line">
+            {product.packaging.map((item) => (
+              <li key={item} className="py-3 text-sm">
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            Private labelling is available on request. The minimum order is confirmed with the quote.
+          </p>
+        </section>
 
-            {product.applications.length > 0 && (
-              <Reveal direction="left" delay={0.3}>
-                <div className="card-gold-top bg-white border border-[#E8D5A0]/60 p-6 shadow-sm">
-                  <h3 className="text-[10px] tracking-[0.3em] uppercase font-semibold text-[#0B1120] mb-5 flex items-center gap-2">
-                    <span className="w-4 h-px bg-[#C9A84C]" /> Applications
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.applications.map((app) => (
-                      <span
-                        key={app}
-                        className="bg-[#FAF5EE] text-[#0B1120]/60 text-[10px] px-3 py-1.5 border border-[#E8D5A0] tracking-wide"
-                      >
-                        {app}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Reveal>
-            )}
+        <section className="mt-8" aria-labelledby="uses-heading">
+          <h2 id="uses-heading" className="text-3xl sm:text-4xl">
+            Who it is sold to
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">{product.uses.join(" · ")}</p>
+        </section>
 
-            <Reveal direction="left" delay={0.4}>
-              <div
-                className="relative p-7 overflow-hidden"
-                style={{ background: "linear-gradient(145deg, #0B1120, #0B1530)" }}
-              >
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
-                <div className="absolute inset-0 dot-pattern opacity-10" />
-                <div className="relative">
-                  <p className="text-[#C9A84C] text-[9px] tracking-[0.3em] uppercase font-semibold mb-2">Get a Quote</p>
-                  <h3 className="font-[family-name:var(--font-cormorant)] text-xl font-semibold text-white mb-2">
-                    Interested in {product.name}?
-                  </h3>
-                  <p className="text-blue-200/40 text-xs leading-relaxed mb-5">
-                    Send us your requirements and receive a detailed quote within 24 hours.
-                  </p>
-                  <Link
-                    href={`/contact?product=${product.slug}`}
-                    className="btn-gold flex items-center justify-center gap-2 text-[#0B1120] text-sm font-semibold px-5 py-2.5 rounded-sm tracking-wide w-full"
-                  >
-                    Request a Quote <ArrowRight size={13} />
+        <p className="mt-8 text-sm leading-relaxed text-ink-soft">
+          For more than one product, use Add to enquiry on each page, then open Enquiry in the header. Sources for every figure are in the repository file SPEC_SOURCES.md. The Certificate of Analysis for a lot is sent with the quote.
+        </p>
+
+        <div className="mt-6 hidden flex-wrap gap-2 lg:flex">
+          <Link href={quoteHref(product.slug)} className="btn">
+            Request a quote for {product.name}
+          </Link>
+          <a
+            href={whatsappHref(`Hello Sarvanta Global, I would like a quote for ${product.name}.`)}
+            className="btn-line"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp about {product.name}
+          </a>
+        </div>
+
+        {related.length > 0 ? (
+          <section className="mt-10 border-t border-line pt-8" aria-labelledby="related-heading">
+            <h2 id="related-heading" className="text-3xl sm:text-4xl">
+              Also supplied
+            </h2>
+            <ul className="mt-3 divide-y divide-line border-y border-line">
+              {related.map((item) => (
+                <li key={item.slug} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                  <Link href={`/products/${item.slug}`} className="font-serif text-2xl underline decoration-line underline-offset-4">
+                    {item.name}
                   </Link>
-                </div>
-              </div>
-            </Reveal>
+                  <Link href={quoteHref(item.slug)} className="text-sm font-semibold underline underline-offset-4">
+                    Request quote
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
 
-          </div>
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink bg-paper p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+        <div className="mx-auto flex max-w-6xl items-center gap-2">
+          <Link href={quoteHref(product.slug)} className="btn flex-1 text-sm">
+            Request a quote
+          </Link>
+          <AddToEnquiry slug={product.slug} name={product.name} short />
         </div>
       </div>
+    </article>
+  );
+}
+
+function Fact({ term, value }: { term: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted">{term}</dt>
+      <dd className="mt-1 text-sm leading-snug">{value}</dd>
+    </div>
+  );
+}
+
+function SpecNote({ table }: { table: SpecTable }) {
+  return (
+    <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
+      <p>{specNotes[table.kind]}</p>
+      {table.extra ? <p>{table.extra}</p> : null}
+    </div>
+  );
+}
+
+function SpecTable({ rows, caption }: { rows: SpecRow[]; caption: string }) {
+  return (
+    <div className="mt-5 max-w-full overflow-x-auto">
+      <table className="w-full min-w-[18rem] text-left text-sm">
+        <caption className="sr-only">{caption}</caption>
+        <thead className="border-b border-ink text-[11px] uppercase tracking-[0.14em]">
+          <tr>
+            <th scope="col" className="w-2/5 py-3 pr-4 font-medium">
+              Parameter
+            </th>
+            <th scope="col" className="py-3 font-medium">
+              Specification
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.label} className="border-b border-line">
+              <th scope="row" className="py-3 pr-4 align-top font-medium">
+                {row.label}
+              </th>
+              <td className="py-3 align-top">{row.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

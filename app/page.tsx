@@ -1,310 +1,251 @@
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Leaf, Package, Headphones, ShieldCheck, Sprout, Globe2, Users, Truck, Tag } from "lucide-react";
-import { products } from "@/lib/products";
-import Reveal from "@/components/Reveal";
-import MarqueeTicker from "@/components/MarqueeTicker";
+import Link from "next/link";
+import { AddToEnquiry } from "@/components/AddToEnquiry";
+import { keySpec, supplyForm } from "@/lib/display";
+import { catalogueGroups, priorityProducts, products, productsIn } from "@/lib/products";
+import { pageMetadata } from "@/lib/seo";
+import { quoteHref, site, whatsappHref } from "@/lib/site";
 
-const HP = "/images/Home Page - Images";
+export const metadata = pageMetadata({
+  title: "Indian spices and agri commodities",
+  description: site.description,
+  path: "/",
+});
 
-// Homepage-specific product images (higher quality shots)
-const productImages: Record<string, string> = {
-  "red-chillies":                  `${HP}/03-product-red-chillies-clear.webp`,
-  "black-pepper":                  `${HP}/04-product-black-pepper-clear.webp`,
-  "white-pepper":                  `${HP}/05-product-white-pepper-clear.webp`,
-  "moringa-powder":                `${HP}/06-product-moringa-powder-clear.webp`,
-  "jaggery-powder":                `${HP}/07-product-jaggery-powder-clear.webp`,
-  "dehydrated-vegetable-powders":  `${HP}/08-product-vegetable-powders-clear.webp`,
-};
-
-const trustBadges = [
-  { icon: Leaf,       title: "Premium Products",        desc: "Carefully sourced agricultural commodities that meet international standards." },
-  { icon: Package,    title: "Export-Ready Packaging",  desc: "Customized packaging solutions for bulk, retail and private label requirements." },
-  { icon: Headphones, title: "Responsive Support",      desc: "Prompt quotations and dedicated assistance for a seamless buyer experience." },
-  { icon: ShieldCheck,title: "Quality Focus",           desc: "Strict quality checks and ethical practices to ensure consistent product excellence." },
+const steps = [
+  {
+    n: "01",
+    title: "Enquiry",
+    text: "Tell us the product, the quantity, and the packing you want. Name a grade if you have one.",
+  },
+  {
+    n: "02",
+    title: "Quote within 24 hours",
+    text: "We reply with price and availability within 24 hours.",
+  },
+  {
+    n: "03",
+    title: "Sample",
+    text: "Samples are available before you place the order.",
+  },
+  {
+    n: "04",
+    title: "Order",
+    text: "We confirm the lot against the quote and proceed.",
+  },
 ];
 
-const whyPoints = [
-  { icon: Sprout,     title: "Trusted Sourcing",    desc: "Partnering with carefully selected growers and processors across India." },
-  { icon: ShieldCheck,title: "Consistent Quality",  desc: "Products sourced and processed to meet international quality expectations." },
-  { icon: Package,    title: "Flexible Packaging",  desc: "Bulk and customized packaging solutions designed for global buyers." },
-  { icon: Truck,      title: "Reliable Supply",     desc: "Dependable sourcing and timely deliveries through trusted supply networks." },
-  { icon: Tag,        title: "Competitive Pricing", desc: "Transparent pricing backed by efficient procurement and long-term relationships." },
-  { icon: Headphones, title: "Responsive Support",  desc: "Prompt quotations, dedicated communication, and customer-focused service." },
+const facts: { term: string; detail: string; pending?: string }[] = [
+  { term: "Location", detail: site.location },
+  { term: "IEC", detail: "Registered.", pending: "IEC number to be added" },
+  { term: "GST", detail: "Registered.", pending: "GSTIN to be added" },
+  { term: "Documents", detail: "A Certificate of Analysis is sent with the quote, for that lot." },
+  { term: "Sample", detail: "Available on request, before the order." },
+  { term: "Minimum order", detail: "Confirmed with the quote." },
+  {
+    term: "Sold to",
+    detail:
+      "Importers, distributors, wholesalers, and food manufacturers in India and worldwide. Private labelling is on request.",
+  },
 ];
 
-const aboutIcons = [
-  { icon: Sprout,     label: "Ethical Sourcing" },
-  { icon: Globe2,     label: "International Standards" },
-  { icon: ShieldCheck,label: "Transparent Process" },
-  { icon: Users,      label: "Customer First Approach" },
-];
-
-
-export default function Home() {
+export default function HomePage() {
   return (
     <>
-      {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-[#0B1120] min-h-[90vh] flex items-center">
-        {/* Right-side hero image */}
-        <div className="absolute inset-0">
-          <Image
-            src={`${HP}/01-hero-commerce-scene-clear.webp`}
-            alt="Premium agricultural commodities export"
-            fill
-            className="object-cover object-right"
-            priority
-          />
-          {/* Left fade for text readability, right side stays bright */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1120] from-30% via-[#0B1120]/40 via-50% to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1120]/40 via-transparent to-transparent" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
-          <div className="max-w-xl">
-            <Reveal delay={0}>
-              <div className="flex items-center gap-3 mb-7">
-                <div className="h-px w-8 bg-[#C9A84C]" />
-                <span className="text-[#C9A84C] text-[10px] tracking-[0.45em] uppercase font-semibold">
-                  Connecting Markets. Creating Opportunities.
-                </span>
-                <div className="h-px w-8 bg-[#C9A84C]" />
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.08}>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] mb-6">
-                Premium<br />
-                <span className="text-[#C9A84C]">Agricultural</span><br />
-                <span className="text-[#C9A84C]">Commodities</span><br />
-                from India
-              </h1>
-            </Reveal>
-
-            <Reveal delay={0.16}>
-              <p className="text-white/50 text-sm leading-relaxed mb-8 max-w-sm">
-                Sarvanta Global is a premium agricultural commodities company connecting international buyers with responsibly sourced products from India. Through dependable sourcing, uncompromising quality, and customer-focused service, we help businesses build reliable supply partnerships across global markets.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.22}>
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/products"
-                  className="btn-gold inline-flex items-center gap-2 text-[#0B1120] font-semibold px-7 py-3.5 rounded-sm tracking-wide text-sm"
-                >
-                  Explore Products <ArrowRight size={14} />
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 border border-white/40 text-white font-semibold px-7 py-3.5 rounded-sm tracking-wide text-sm hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all duration-200"
-                >
-                  Request a Quote <ArrowRight size={14} />
-                </Link>
-              </div>
-            </Reveal>
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-6xl px-5 pb-4 pt-6 lg:pb-10 lg:pt-14">
+          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-accent">
+            Sarvanta Global · {site.location}
+          </p>
+          <h1 className="mt-3 max-w-4xl text-[2.15rem] leading-[1.02] sm:text-6xl sm:leading-[0.96]">
+            Turmeric and red chillies, supplied in bulk from Bangalore.
+          </h1>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft sm:mt-4 sm:text-base">
+            Whole and ground, plus other spices and powders, for importers, distributors, wholesalers, and food manufacturers. Enquiry, quote within 24 hours, sample, then order.
+          </p>
+          <div className="mt-4 flex gap-2 sm:mt-6">
+            <Link href={quoteHref()} className="btn flex-1 whitespace-nowrap sm:flex-none">
+              Request a quote
+            </Link>
+            <Link href="/products" className="btn-line flex-1 whitespace-nowrap sm:flex-none">
+              Browse products
+            </Link>
           </div>
         </div>
-      </section>
 
-      {/* ── TRUST BADGES ── */}
-      <section className="bg-[#111827] border-t border-[#C9A84C]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-white/5">
-            {trustBadges.map(({ icon: Icon, title, desc }, i) => (
-              <Reveal key={title} delay={i * 0.08}>
-                <div className="flex flex-col gap-2 px-8 py-2">
-                  <Icon size={22} className="text-[#C9A84C]" strokeWidth={1.5} />
-                  <h3 className="text-white text-[11px] font-bold tracking-[0.14em] uppercase mt-1">{title}</h3>
-                  <p className="text-white/35 text-[11px] leading-relaxed">{desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <MarqueeTicker />
-
-      {/* ── ABOUT / CONNECTING MARKETS ── */}
-      <section className="bg-white py-0">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch">
-            {/* Left — farm image, full height */}
-            <Reveal direction="right" className="h-full">
-              <div className="relative h-[320px] lg:h-full lg:min-h-full min-h-[320px] px-3 py-6 bg-white">
-                <div className="relative w-full h-full outline outline-4 outline-white outline-offset-[-12px]">
-                  <Image
-                    src={`${HP}/02-about-farm-field-clear.webp`}
-                    alt="Sarvanta Global farm sourcing"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Right — text */}
-            <Reveal direction="left">
-              <div className="flex flex-col justify-center px-8 lg:px-14 py-10">
-                <p className="text-[#C9A84C] text-[10px] tracking-[0.4em] uppercase font-semibold mb-4">
-                  About Sarvanta Global
-                </p>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-4xl md:text-5xl font-semibold text-[#0B1120] leading-tight mb-1">
-                  Connecting Markets.
-                </h2>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-4xl md:text-5xl font-semibold text-[#0B1120] leading-tight mb-5">
-                  Creating Opportunities.
-                </h2>
-                <div className="w-10 h-0.5 bg-[#C9A84C] mb-6" />
-                <p className="text-[#0B1120]/60 text-sm leading-relaxed mb-3">
-                  Sarvanta Global partners with trusted growers and processors across India to deliver premium agricultural commodities to buyers worldwide.
-                </p>
-                <p className="text-[#0B1120]/60 text-sm leading-relaxed mb-8">
-                  We believe successful trade is built on consistency, transparency, and long-term relationships.
-                </p>
-
-                <div className="grid grid-cols-4 gap-3 mb-10">
-                  {aboutIcons.map(({ icon: Icon, label }) => (
-                    <div key={label} className="flex flex-col items-center text-center gap-2">
-                      <div className="w-12 h-12 flex items-center justify-center">
-                        <Icon size={28} className="text-[#C9A84C]" strokeWidth={1.3} />
-                      </div>
-                      <span className="text-[#0B1120]/60 text-[10px] leading-tight">{label}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div>
-                  <Link
-                    href="/about"
-                    className="inline-flex items-center gap-2 bg-[#0B1120] text-white font-semibold px-7 py-3.5 text-sm tracking-wide hover:bg-[#1A2D4A] transition-colors duration-200"
-                  >
-                    Learn More About Us <ArrowRight size={14} />
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ── PRODUCT PORTFOLIO ── */}
-      <section className="bg-[#0B1120] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-              <div>
-                <p className="text-[#C9A84C] text-[10px] tracking-[0.4em] uppercase font-semibold mb-3">
-                  Our Product Portfolio
-                </p>
-                <h2 className="font-[family-name:var(--font-cormorant)] text-2xl md:text-3xl font-bold text-white leading-snug max-w-xl">
-                  Carefully sourced agricultural commodities<br className="hidden md:block" /> that meet international quality standards.
-                </h2>
-              </div>
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-1.5 text-[#C9A84C] text-sm font-semibold hover:gap-3 transition-all duration-200 shrink-0"
-              >
-                View All Products <ArrowRight size={14} />
-              </Link>
-            </div>
-          </Reveal>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {products.map((product, i) => (
-              <Reveal key={product.slug} delay={i * 0.07}>
-                <Link
-                  href={`/products/${product.slug}`}
-                  className="group bg-[#111827] border border-white/5 overflow-hidden hover:border-[#C9A84C]/30 hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full"
-                >
-                  <div className="relative h-36 overflow-hidden">
-                    <Image
-                      src={productImages[product.slug] ?? product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover brightness-110 contrast-105 group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-3 flex flex-col flex-1 border-t border-white/5">
-                    <h3 className="text-white font-bold text-sm leading-tight mb-1">{product.name}</h3>
-                    <p className="text-white/40 text-[11px] leading-relaxed flex-1 line-clamp-3">
-                      {product.description}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-[#C9A84C] text-[11px] font-semibold mt-3 group-hover:gap-2 transition-all duration-200">
-                      View Details <ArrowRight size={10} />
+        <div className="mx-auto max-w-6xl px-5 pb-12 lg:pb-16">
+          <h2 className="sr-only">Priority products</h2>
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4 lg:gap-6">
+            {priorityProducts.map((product, index) => {
+              const spec = keySpec(product);
+              return (
+                <li key={product.slug}>
+                  <Link href={`/products/${product.slug}`} className="group block">
+                    <span className="relative block aspect-[16/9] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
+                      <Image
+                        src={product.image}
+                        alt={product.imageAlt}
+                        fill
+                        sizes="(min-width: 1024px) 280px, 45vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        {...(index === 0 ? { preload: true } : {})}
+                      />
                     </span>
+                    <span className="mt-3 block text-[10px] font-medium uppercase tracking-[0.18em] text-accent">Priority</span>
+                    <span className="mt-1 block font-serif text-base leading-tight text-ink sm:text-2xl">{product.name}</span>
+                  </Link>
+                  <p className="mt-1 line-clamp-1 text-sm text-ink-soft">{supplyForm(product)}</p>
+                  {spec ? (
+                    <p className="mt-1 line-clamp-2 text-xs leading-snug text-muted max-sm:hidden">
+                      <span className="text-ink-soft">{spec.label}. </span>
+                      {spec.value}
+                    </p>
+                  ) : null}
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <Link
+                      href={quoteHref(product.slug)}
+                      className="text-[11px] font-medium uppercase tracking-[0.14em] underline underline-offset-4"
+                    >
+                      Request quote
+                    </Link>
+                    <AddToEnquiry slug={product.slug} name={product.name} short quiet />
                   </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-8 text-xs leading-relaxed text-muted">
+            Interim photographs. Authors and licences are on the{" "}
+            <Link href="/credits" className="underline underline-offset-4">
+              image credits
+            </Link>{" "}
+            page.
+          </p>
         </div>
       </section>
 
-
-      {/* ── WHY GLOBAL BUYERS CHOOSE US ── */}
-      <section className="bg-white py-16 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <p className="text-[#0B1120]/60 text-[10px] tracking-[0.45em] uppercase font-semibold text-center mb-12">
-              Why Global Buyers Choose Sarvanta Global
-            </p>
-          </Reveal>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-            {whyPoints.map(({ icon: Icon, title, desc }, i) => (
-              <Reveal key={title} delay={i * 0.07}>
-                <div className="flex flex-col items-center text-center gap-3">
-                  <Icon size={34} className="text-[#C9A84C]" strokeWidth={1.2} />
-                  <h4 className="text-[#0B1120] font-semibold text-[13px]">{title}</h4>
-                  <p className="text-[#0B1120]/45 text-[11px] leading-relaxed">{desc}</p>
-                </div>
-              </Reveal>
+      <section className="border-b border-line" aria-labelledby="order-heading">
+        <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
+          <h2 id="order-heading" className="text-4xl sm:text-5xl">
+            How to order
+          </h2>
+          <ol className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step) => (
+              <li key={step.n}>
+                <p className="font-serif text-4xl leading-none text-accent">{step.n}</p>
+                <h3 className="mt-4 font-sans text-[11px] font-medium uppercase tracking-[0.16em]">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.text}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="relative overflow-hidden bg-[#0B1120] py-24">
-        {/* Split background: globe left, cargo ship right */}
-        <div className="absolute inset-0 grid grid-cols-2">
-          <div className="relative">
-            <Image src={`${HP}/09-cta-global-network-clear.webp`} alt="" fill className="object-cover opacity-80 brightness-110" />
-            <div className="absolute inset-0 bg-[#0B1120]/25" />
-          </div>
-          <div className="relative">
-            <Image src={`${HP}/10-cta-cargo-ship-clear.webp`} alt="" fill className="object-cover opacity-85 brightness-110" />
-            <div className="absolute inset-0 bg-[#0B1120]/20" />
-          </div>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B1120]/40 via-transparent to-[#0B1120]/40" />
-
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Reveal>
-            <h2 className="font-[family-name:var(--font-cormorant)] text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-2">
-              Ready to Source Premium
-            </h2>
-            <h2 className="font-[family-name:var(--font-cormorant)] text-3xl md:text-4xl lg:text-5xl font-bold text-[#C9A84C] leading-tight mb-4">
-              Agricultural Commodities?
-            </h2>
-            <p className="text-white/50 text-sm mb-10">Let&apos;s build a long-term partnership.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/contact"
-                className="btn-gold inline-flex items-center justify-center gap-2 text-[#0B1120] font-semibold px-8 py-4 rounded-sm tracking-wide text-sm"
-              >
-                Request a Quote <ArrowRight size={14} />
-              </Link>
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center gap-2 border border-white/40 text-white font-semibold px-8 py-4 rounded-sm tracking-wide text-sm hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all duration-200"
-              >
-                Browse Products <ArrowRight size={14} />
-              </Link>
+      <section className="border-b border-line" aria-labelledby="range-heading">
+        <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 id="range-heading" className="text-4xl sm:text-5xl">
+                Catalogue
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
+                {products.length} products in three groups. Packing is 25 kg or 50 kg PP bags, jute bags, or custom. Open the browser to search, compare a key specification, and add more than one product to an enquiry.
+              </p>
             </div>
-          </Reveal>
+            <Link href="/products" className="btn-line">
+              Browse products
+            </Link>
+          </div>
+          <div className="mt-12">
+            {catalogueGroups.map((group) => {
+              const items = productsIn(group.id);
+              return (
+                <div key={group.id} className="grid gap-4 border-t border-line py-8 md:grid-cols-12 md:gap-8">
+                  <div className="md:col-span-4">
+                    <h3 className="font-serif text-3xl leading-none">
+                      <Link href={group.href} className="hover:text-accent">
+                        {group.name}
+                      </Link>
+                    </h3>
+                    <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-muted">{items.length} products</p>
+                  </div>
+                  <ul className="flex flex-wrap gap-x-5 gap-y-2 md:col-span-8">
+                    {items.map((product) => (
+                      <li key={product.slug}>
+                        <Link href={`/products/${product.slug}`} className="text-sm underline decoration-line underline-offset-4 hover:decoration-ink">
+                          {product.name}
+                        </Link>
+                        {product.priority ? (
+                          <span className="ml-2 text-[10px] uppercase tracking-[0.14em] text-accent">Priority</span>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="facts-heading">
+        <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
+          <h2 id="facts-heading" className="text-4xl sm:text-5xl">
+            What we can confirm
+          </h2>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
+            Sarvanta Global is based in {site.location}. IEC and GST are registered. The numbers themselves are still to be added.
+          </p>
+          <dl className="mt-10 border-t border-ink">
+            {facts.map((fact) => (
+              <div key={fact.term} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[12rem_1fr] sm:items-baseline sm:gap-8">
+                <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">{fact.term}</dt>
+                <dd className="text-sm leading-relaxed">
+                  {fact.detail}{" "}
+                  {fact.pending ? <span className="text-accent">{fact.pending}</span> : null}
+                </dd>
+              </div>
+            ))}
+            <div className="grid gap-1 border-b border-line py-4 sm:grid-cols-[12rem_1fr] sm:items-baseline sm:gap-8">
+              <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Contact</dt>
+              <dd className="space-y-1 text-sm">
+                <p>
+                  <a className="underline underline-offset-4" href={`tel:${site.phoneTel}`}>
+                    {site.phoneDisplay}
+                  </a>
+                  {" · "}
+                  <a className="underline underline-offset-4" href={whatsappHref()}>
+                    WhatsApp
+                  </a>
+                </p>
+                <p>
+                  <a className="underline underline-offset-4" href={`mailto:${site.email}`}>
+                    {site.email}
+                  </a>
+                </p>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section className="border-t border-ink" aria-labelledby="contact-strip-heading">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-14 sm:flex-row sm:items-end sm:justify-between lg:py-20">
+          <div>
+            <h2 id="contact-strip-heading" className="max-w-xl text-4xl leading-[1.02] sm:text-5xl">
+              Send the product and the quantity.
+            </h2>
+            <p className="mt-4 text-sm text-ink-soft">A quote comes back within 24 hours. Samples are available.</p>
+          </div>
+          <div className="flex gap-2">
+            <Link href={quoteHref()} className="btn flex-1 whitespace-nowrap sm:flex-none">
+              Request a quote
+            </Link>
+            <Link href="/products" className="btn-line flex-1 whitespace-nowrap sm:flex-none">
+              Browse products
+            </Link>
+          </div>
         </div>
       </section>
     </>
