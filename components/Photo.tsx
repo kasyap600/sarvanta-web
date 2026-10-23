@@ -6,18 +6,23 @@ export function Photo({
   alt,
   sizes,
   credit,
+  caption,
   ratio = "aspect-[4/5]",
   preload = false,
+  eager = false,
   className = "object-cover",
 }: {
   src: string;
   alt: string;
   sizes: string;
   credit?: ImageCredit;
+  caption?: string;
   ratio?: string;
   preload?: boolean;
+  eager?: boolean;
   className?: string;
 }) {
+  const loadNow = preload || eager;
   return (
     <figure>
       <div className={`relative overflow-hidden bg-paper-deep ${ratio}`}>
@@ -27,9 +32,11 @@ export function Photo({
           fill
           sizes={sizes}
           className={className}
+          loading={loadNow ? "eager" : "lazy"}
           {...(preload ? { preload: true } : {})}
         />
       </div>
+      {caption ? <figcaption className="mt-2 text-sm leading-snug text-ink-soft">{caption}</figcaption> : null}
       {credit ? <PhotoCredit credit={credit} /> : null}
     </figure>
   );

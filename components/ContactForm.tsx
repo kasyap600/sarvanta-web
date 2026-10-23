@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { priorityProducts, products } from "@/lib/products";
+import { catalogueGroups, products, productsIn } from "@/lib/products";
 
 const schema = z.object({
   name: z.string().min(2, "Enter your name"),
@@ -19,8 +19,6 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
-
-const otherProducts = products.filter((product) => !product.priority);
 
 export default function ContactForm() {
   const searchParams = useSearchParams();
@@ -93,20 +91,16 @@ export default function ContactForm() {
         <Field label="Product" name="product" required error={errors.product?.message}>
           <select id="product" className="field" {...register("product")}>
             <option value="">Select a product</option>
-            <optgroup label="Priority">
-              {priorityProducts.map((product) => (
-                <option key={product.slug} value={product.slug}>
-                  {product.name}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="Also supplied">
-              {otherProducts.map((product) => (
-                <option key={product.slug} value={product.slug}>
-                  {product.name}
-                </option>
-              ))}
-            </optgroup>
+            {catalogueGroups.map((group) => (
+              <optgroup key={group.id} label={group.name}>
+                {productsIn(group.id).map((product) => (
+                  <option key={product.slug} value={product.slug}>
+                    {product.name}
+                    {product.priority ? " (priority)" : ""}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
             <option value="multiple">More than one product</option>
           </select>
         </Field>

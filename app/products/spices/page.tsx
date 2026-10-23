@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { ProductList } from "@/components/ProductList";
-import { productsIn } from "@/lib/products";
+import { Catalogue } from "@/components/Catalogue";
+import { groupById } from "@/lib/products";
 import { pageMetadata } from "@/lib/seo";
+
+const group = groupById("spices");
 
 export const metadata = pageMetadata({
   title: "Spices",
-  description:
-    "Indian spices supplied in bulk: red chillies, turmeric, black and white pepper, and cumin, whole and ground.",
+  description: group.intro,
   path: "/products/spices",
 });
 
@@ -16,12 +17,10 @@ export default function SpicesPage() {
       <p className="text-sm text-muted">
         <Link href="/products" className="underline underline-offset-4">Products</Link>
       </p>
-      <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Spices</h1>
-      <p className="prose-measure mt-4 text-ink-soft">
-        Whole and ground spices from India. Red chillies and turmeric are the priority lines. Cumin, black pepper, and white pepper are quoted the same way: enquiry, quote within 24 hours, sample if you want one, then the order.
-      </p>
+      <h1 className="mt-3 font-serif text-4xl sm:text-5xl">{group.name}</h1>
+      <p className="prose-measure mt-4 text-ink-soft">{group.intro}</p>
       <div className="mt-10">
-        <ProductList products={productsIn("Spices")} />
+        <Catalogue only="spices" />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { site } from "@/lib/site";
 
-const defaultImage = "/images/Home Page - Images/03-product-red-chillies-clear.webp";
+const defaultImage = "/images/products/red-chillies.webp";
 
 export function pageMetadata({
   title,

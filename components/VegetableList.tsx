@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import type { NamedImage } from "@/lib/products";
+type NamedImage = { name: string; image: string; alt: string };
 
 export default function VegetableList({ powders }: { powders: NamedImage[] }) {
   const [active, setActive] = useState<NamedImage | null>(null);

@@ -1,18 +1,18 @@
 import Link from "next/link";
-import { products } from "@/lib/products";
+import { catalogueGroups, productsIn } from "@/lib/products";
 import { site, whatsappHref } from "@/lib/site";
 
 export default function Footer() {
   return (
     <footer className="border-t border-line bg-ink text-paper">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-12">
+        <div className="lg:col-span-3">
           <p className="font-serif text-2xl">Sarvanta Global</p>
           <p className="mt-3 text-sm leading-relaxed text-paper/80">
             B2B sourcing and trading of Indian spices and agri commodities. Based in {site.location}.
           </p>
         </div>
-        <div>
+        <div className="lg:col-span-2">
           <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-paper/80">Pages</h2>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link className="underline decoration-paper/30 underline-offset-4" href="/">Home</Link></li>
@@ -26,19 +26,28 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-        <div>
+        <div className="sm:col-span-2 lg:col-span-4">
           <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-paper/80">Products</h2>
-          <ul className="mt-3 space-y-2 text-sm">
-            {products.map((product) => (
-              <li key={product.slug}>
-                <Link className="underline decoration-paper/30 underline-offset-4" href={`/products/${product.slug}`}>
-                  {product.name}
-                </Link>
-              </li>
+          <div className="mt-3 grid gap-6 sm:grid-cols-3">
+            {catalogueGroups.map((group) => (
+              <div key={group.id}>
+                <p className="text-sm font-semibold">
+                  <Link className="underline decoration-paper/30 underline-offset-4" href={group.href}>{group.name}</Link>
+                </p>
+                <ul className="mt-2 space-y-1.5 text-sm">
+                  {productsIn(group.id).map((product) => (
+                    <li key={product.slug}>
+                      <Link className="underline decoration-paper/30 underline-offset-4" href={`/products/${product.slug}`}>
+                        {product.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
-        <div>
+        <div className="lg:col-span-3">
           <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-paper/80">Contact</h2>
           <ul className="mt-3 space-y-2 text-sm">
             <li><a className="underline decoration-paper/30 underline-offset-4" href={`tel:${site.phoneTel}`}>{site.phoneDisplay}</a></li>

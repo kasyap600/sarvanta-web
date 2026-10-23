@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { catalogueGroups, productsIn } from "@/lib/products";
 import { quoteHref } from "@/lib/site";
 
 const links = [
@@ -11,17 +12,6 @@ const links = [
   { href: "/products", label: "Products" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-];
-
-const productLinks = [
-  { href: "/products", label: "All products" },
-  { href: "/products/spices", label: "Spices" },
-  { href: "/products/powders", label: "Moringa and jaggery" },
-  { href: "/products/dehydrated-vegetable-powders", label: "Vegetable powders" },
-  { href: "/products/red-chillies", label: "Red chillies" },
-  { href: "/products/red-chilli-powder", label: "Red chilli powder" },
-  { href: "/products/turmeric-fingers", label: "Turmeric fingers" },
-  { href: "/products/turmeric-powder", label: "Turmeric powder" },
 ];
 
 export default function Navbar() {
@@ -106,18 +96,9 @@ export default function Navbar() {
                 {productsOpen ? (
                   <div
                     id={productsId}
-                    className="absolute left-0 top-full z-50 w-64 border border-line bg-card py-2 shadow-sm"
+                    className="absolute left-0 top-full z-50 max-h-[70vh] w-80 overflow-y-auto border border-line bg-card py-2 shadow-sm"
                   >
-                    {productLinks.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block min-h-11 px-4 py-2.5 text-sm text-ink hover:bg-paper"
-                        onClick={() => setProductsOpen(false)}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+                    <ProductMenu onNavigate={() => setProductsOpen(false)} />
                   </div>
                 ) : null}
               </div>
@@ -163,7 +144,7 @@ export default function Navbar() {
               Close
             </button>
           </div>
-          <nav className="flex flex-col px-5 py-4" aria-label="Mobile">
+          <nav className="flex max-h-[calc(100%-4rem)] flex-col overflow-y-auto px-5 py-4" aria-label="Mobile">
             {links
               .filter((link) => link.href !== "/products")
               .map((link) => (
@@ -177,11 +158,7 @@ export default function Navbar() {
                 </Link>
               ))}
             <p className="pb-1 pt-6 text-xs font-semibold uppercase tracking-[0.16em] text-muted">Products</p>
-            {productLinks.map((item) => (
-              <Link key={item.href} href={item.href} className="border-b border-line py-3 text-base">
-                {item.label}
-              </Link>
-            ))}
+            <ProductMenu />
             <Link href={quoteHref()} className="btn mt-6">
               Request a quote
             </Link>
@@ -189,5 +166,36 @@ export default function Navbar() {
         </div>
       ) : null}
     </header>
+  );
+}
+
+function ProductMenu({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <>
+      <Link href="/products" className="block min-h-11 px-4 py-2.5 text-sm font-semibold text-ink hover:bg-paper" onClick={onNavigate}>
+        All products
+      </Link>
+      {catalogueGroups.map((group) => (
+        <div key={group.id} className="border-t border-line">
+          <Link
+            href={group.href}
+            className="block px-4 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted hover:text-ink"
+            onClick={onNavigate}
+          >
+            {group.name}
+          </Link>
+          {productsIn(group.id).map((product) => (
+            <Link
+              key={product.slug}
+              href={`/products/${product.slug}`}
+              className="block min-h-11 px-4 py-2 text-sm text-ink hover:bg-paper"
+              onClick={onNavigate}
+            >
+              {product.name}
+            </Link>
+          ))}
+        </div>
+      ))}
+    </>
   );
 }

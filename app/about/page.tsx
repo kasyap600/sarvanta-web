@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Photo } from "@/components/Photo";
+import { getProductBySlug } from "@/lib/products";
 import { pageMetadata } from "@/lib/seo";
 import { quoteHref, site, whatsappHref } from "@/lib/site";
 
@@ -11,6 +12,7 @@ export const metadata = pageMetadata({
 });
 
 export default function AboutPage() {
+  const pepper = getProductBySlug("black-pepper")!;
   return (
     <div className="mx-auto max-w-6xl px-5 py-12 lg:py-16">
       <div className="grid items-start gap-10 lg:grid-cols-12">
@@ -21,7 +23,7 @@ export default function AboutPage() {
           </h1>
           <div className="mt-6 space-y-4 text-ink-soft leading-relaxed">
             <p>
-              Sarvanta Global sources and sells in bulk. The catalogue covers red chillies, turmeric, black pepper, white pepper, cumin, moringa powder, jaggery powder, and 13 dehydrated vegetable powders. Turmeric and red chillies are sold both whole and ground.
+              Sarvanta Global sources and sells in bulk. The catalogue is spices, natural and herbal powders, and dehydrated vegetable and fruit powders. Turmeric and red chillies are sold both whole and ground.
             </p>
             <p>
               Buyers are businesses in India and buyers abroad: importers, distributors, wholesalers, food manufacturers, and HoReCa. Private labelling is available on request.
@@ -63,10 +65,12 @@ export default function AboutPage() {
         </div>
         <div className="lg:col-span-5">
           <Photo
-            src="/images/Home Page - Images/04-product-black-pepper-clear.webp"
-            alt="Whole black peppercorns"
+            src={pepper.image}
+            alt={pepper.imageAlt}
+            credit={pepper.imageCredit}
             sizes="(min-width: 1024px) 36vw, 100vw"
             ratio="aspect-[4/5]"
+            eager
           />
         </div>
       </div>

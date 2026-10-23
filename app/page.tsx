@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Photo } from "@/components/Photo";
-import { categories, getProductBySlug, priorityProducts, productsIn } from "@/lib/products";
+import { catalogueGroups, getProductBySlug, priorityProducts, products, productsIn } from "@/lib/products";
 import { pageMetadata } from "@/lib/seo";
 import { quoteHref, site, whatsappHref } from "@/lib/site";
 
@@ -43,9 +43,7 @@ const buyers = [
 ];
 
 export default function HomePage() {
-  const spices = productsIn("Spices");
-  const powders = productsIn("Powders");
-  const vegetables = productsIn("Vegetable powders")[0];
+  const hero = getProductBySlug("red-chillies")!;
 
   return (
     <>
@@ -57,9 +55,7 @@ export default function HomePage() {
               Indian spices and agri commodities for businesses in India and abroad.
             </h1>
             <p className="prose-measure mt-6 text-base leading-relaxed text-ink-soft sm:text-lg">
-              Sarvanta Global sources and trades red chillies, turmeric, black and white pepper, cumin, moringa powder,
-              jaggery powder, and 13 dehydrated vegetable powders. We sell in bulk to importers, distributors,
-              wholesalers, food manufacturers, and HoReCa buyers. Private labelling is available on request.
+              Sarvanta Global sources and trades spices, natural and herbal powders, and dehydrated vegetable and fruit powders. We sell in bulk to importers, distributors, wholesalers, food manufacturers, and HoReCa buyers. Private labelling is available on request.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href={quoteHref()} className="btn">
@@ -72,8 +68,9 @@ export default function HomePage() {
           </div>
           <div className="lg:col-span-6">
             <Photo
-              src="/images/Home Page - Images/03-product-red-chillies-clear.webp"
-              alt="Dried red chillies with stems"
+              src={hero.image}
+              alt={hero.imageAlt}
+              credit={hero.imageCredit}
               sizes="(min-width: 1024px) 46vw, 100vw"
               ratio="aspect-[4/5] sm:aspect-[5/4]"
               preload
@@ -101,6 +98,7 @@ export default function HomePage() {
                     credit={product.imageCredit}
                     sizes={index === 0 ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 40vw, 100vw"}
                     ratio={index === 0 ? "aspect-[4/5] sm:aspect-[5/4]" : "aspect-[4/3]"}
+                    eager
                   />
                   <h3 className="mt-4 font-serif text-3xl group-hover:text-chilli">{product.name}</h3>
                 </Link>
@@ -118,32 +116,33 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
           <h2 id="range-heading" className="font-serif text-4xl">The range</h2>
           <p className="prose-measure mt-4 text-ink-soft">
-            Whole spices, ground spices, and powders. Everything is supplied in bulk from India, packed in 25 kg or 50 kg PP bags, jute bags, or custom packing.
+            {products.length} products in three groups. Everything is supplied in bulk from India, packed in 25 kg or 50 kg PP bags, jute bags, or custom packing.
           </p>
-          <div className="mt-12 divide-y divide-line border-y border-line">
-            {categories.map((category) => {
-              const items = productsIn(category);
-              const photo =
-                category === "Spices"
-                  ? getProductBySlug("black-pepper")
-                  : category === "Powders"
-                    ? getProductBySlug("moringa-powder")
-                    : vegetables;
-              if (!photo) return null;
+          <div className="mt-8 flex flex-wrap gap-2">
+            {catalogueGroups.map((group) => (
+              <a key={group.id} href={`#range-${group.id}`} className="inline-flex min-h-11 items-center border border-line px-3 text-sm">
+                {group.name}
+              </a>
+            ))}
+          </div>
+          <div className="mt-8 divide-y divide-line border-y border-line">
+            {catalogueGroups.map((group) => {
+              const items = productsIn(group.id);
+              const photo = items[0];
               return (
-                <div key={category} className="grid gap-6 py-8 md:grid-cols-12 md:items-start">
-                  <h3 className="font-serif text-3xl md:col-span-3">{category}</h3>
+                <div key={group.id} id={`range-${group.id}`} className="grid gap-6 py-8 md:grid-cols-12 md:items-start">
+                  <div className="md:col-span-3">
+                    <h3 className="font-serif text-3xl">
+                      <Link href={group.href} className="hover:text-chilli">{group.name}</Link>
+                    </h3>
+                    <p className="mt-2 text-sm text-muted">{items.length} products</p>
+                  </div>
                   <ul className="md:col-span-6">
                     {items.map((product) => (
                       <li key={product.slug} className="border-b border-line py-3 last:border-0">
                         <Link href={`/products/${product.slug}`} className="font-medium underline decoration-line underline-offset-4 hover:decoration-chilli">
                           {product.name}
                         </Link>
-                        {product.powders ? (
-                          <p className="mt-1 text-sm text-muted">
-                            {product.powders.map((powder) => powder.name.replace(" powder", "")).join(", ")}
-                          </p>
-                        ) : null}
                       </li>
                     ))}
                   </ul>
@@ -151,8 +150,10 @@ export default function HomePage() {
                     <Photo
                       src={photo.image}
                       alt={photo.imageAlt}
+                      credit={photo.imageCredit}
                       sizes="(min-width: 768px) 22vw, 100vw"
                       ratio="aspect-square"
+                      eager
                     />
                   </div>
                 </div>
@@ -163,8 +164,6 @@ export default function HomePage() {
             <Link href="/products" className="font-semibold underline decoration-chilli underline-offset-4">
               Open the full catalogue
             </Link>
-            <span className="text-muted"> · </span>
-            <span className="text-muted">{spices.length} spices, {powders.length} other powders, 13 vegetable powders.</span>
           </p>
         </div>
       </section>

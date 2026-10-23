@@ -1,9 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import VegetableList from "@/components/VegetableList";
 import { Photo } from "@/components/Photo";
-import { getProductBySlug, products, type Product, type SpecRow } from "@/lib/products";
+import {
+  getProductBySlug,
+  groupById,
+  products,
+  specNotes,
+  type Product,
+  type SpecRow,
+  type SpecTable,
+} from "@/lib/products";
 import { pageMetadata } from "@/lib/seo";
 import { quoteHref, whatsappHref } from "@/lib/site";
 
@@ -33,6 +40,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
+  const group = groupById(product.category);
   const related = product.related
     .map((item) => getProductBySlug(item))
     .filter((item): item is Product => Boolean(item));
@@ -43,8 +51,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <p className="text-sm text-muted">
           <Link href="/products" className="underline underline-offset-4">Products</Link>
           <span aria-hidden="true"> / </span>
-          <Link href={product.category === "Spices" ? "/products/spices" : product.category === "Powders" ? "/products/powders" : "/products/dehydrated-vegetable-powders"} className="underline underline-offset-4">
-            {product.category}
+          <Link href={group.href} className="underline underline-offset-4">
+            {group.name}
           </Link>
         </p>
         <header className="mt-4 max-w-3xl">
@@ -61,21 +69,25 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               src={product.image}
               alt={product.imageAlt}
               credit={product.imageCredit}
+              caption={product.imageCaption}
               sizes="(min-width: 1024px) 52vw, 100vw"
               ratio="aspect-[4/5] sm:aspect-[4/3]"
               preload
             />
 
-            <section className="mt-12" aria-labelledby="spec-heading">
-              <h2 id="spec-heading" className="font-serif text-3xl">At a glance</h2>
-              <SpecTable rows={product.specs} caption={`${product.name} general facts`} />
-            </section>
+            {product.tables.map((table) => (
+              <section key={table.title} className="mt-12">
+                <h2 className="font-serif text-3xl">{table.title}</h2>
+                <SpecTable rows={table.rows} caption={table.title} />
+                <SpecNote table={table} />
+              </section>
+            ))}
 
             {product.varieties ? (
               <section className="mt-12" aria-labelledby="variety-heading">
                 <h2 id="variety-heading" className="font-serif text-3xl">Varieties and specification table</h2>
                 <p className="mt-3 text-sm text-muted">
-                  Published figures for whole red chillies. A lot-specific sheet is available with the quote. Scroll sideways on a small screen to compare.
+                  Published figures for whole red chillies, as they appear on the existing catalogue. Scroll sideways on a small screen to compare.
                 </p>
                 <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                   {product.varieties.map((variety) => (
@@ -112,6 +124,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </tbody>
                   </table>
                 </div>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{specNotes.catalogue}</p>
               </section>
             ) : null}
 
@@ -126,15 +139,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </li>
                   ))}
                 </ul>
-              </section>
-            ) : null}
-
-            {product.powders ? (
-              <section className="mt-12" aria-labelledby="powders-heading">
-                <h2 id="powders-heading" className="font-serif text-3xl">The 13 powders</h2>
-                <div className="mt-4">
-                  <VegetableList powders={product.powders} />
-                </div>
               </section>
             ) : null}
 
@@ -157,15 +161,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </ul>
             </section>
 
-            {product.specsOnRequest ? (
-              <section className="mt-12 border border-dashed border-chilli/50 bg-card p-5" aria-labelledby="request-specs">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-chilli">On request</p>
-                <h2 id="request-specs" className="mt-2 font-serif text-3xl">Detailed specifications on request</h2>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  Curcumin, ASTA colour, SHU, mesh, moisture, and other lab figures are not published for {product.name} on this page. Ask for the specification sheet when you request a quote.
-                </p>
-              </section>
-            ) : null}
+            <p className="mt-10 text-sm leading-relaxed text-ink-soft">
+              Sources for every figure are in the repository file SPEC_SOURCES.md. The Certificate of Analysis for a lot is sent with the quote.
+            </p>
           </div>
 
           <aside className="lg:col-span-5 lg:sticky lg:top-24">
@@ -225,15 +223,24 @@ function QuoteBox({ product }: { product: Product }) {
   );
 }
 
+function SpecNote({ table }: { table: SpecTable }) {
+  return (
+    <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
+      <p>{specNotes[table.kind]}</p>
+      {table.extra ? <p>{table.extra}</p> : null}
+    </div>
+  );
+}
+
 function SpecTable({ rows, caption }: { rows: SpecRow[]; caption: string }) {
   return (
-    <div className="mt-4 overflow-hidden border border-line">
+    <div className="mt-4 max-w-full overflow-x-auto border border-line">
       <table className="w-full text-left text-sm">
         <caption className="sr-only">{caption}</caption>
         <tbody>
           {rows.map((row, index) => (
             <tr key={row.label} className={index % 2 === 0 ? "bg-card" : "bg-paper"}>
-              <th scope="row" className="w-2/5 px-4 py-3 font-medium">{row.label}</th>
+              <th scope="row" className="w-2/5 px-4 py-3 align-top font-medium">{row.label}</th>
               <td className="px-4 py-3">{row.value}</td>
             </tr>
           ))}
