@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/products/cumin-seeds", destination: "/products/cumin", permanent: false },
+      {
+        source: "/products/dehydrated-vegetable-powders",
+        destination: "/products/vegetables",
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
