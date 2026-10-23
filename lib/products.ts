@@ -78,6 +78,7 @@ const resizeNote = "Resized and compressed to WebP for this demo. No other retou
 const cc0 = "https://creativecommons.org/publicdomain/zero/1.0/";
 const ccBy2 = "https://creativecommons.org/licenses/by/2.0/";
 const ccBy4 = "https://creativecommons.org/licenses/by/4.0/";
+const ccBySa1 = "https://creativecommons.org/licenses/by-sa/1.0/";
 const ccBySa3 = "https://creativecommons.org/licenses/by-sa/3.0/";
 const ccBySa4 = "https://creativecommons.org/licenses/by-sa/4.0/";
 const pd = "https://creativecommons.org/publicdomain/mark/1.0/";
@@ -455,9 +456,9 @@ export const products: Product[] = [
     description:
       "Ground red chilli, quoted on its own sheet. The ASTA and SHU table for whole Teja, Byadgi, 334/Sannam, and Syngenta chillies is not reused here. FSSAI’s powder standard does not set an ASTA colour or SHU figure.",
     image: "/images/products/red-chilli-powder.webp",
-    imageAlt: "Ground cayenne chilli in a white bowl",
-    imageCaption: "The photograph is ground cayenne, a type of red chilli powder.",
-    imageCredit: shot("Andrew Dalby", "CC0 1.0", cc0, "Cayenne_pepper_1.JPG"),
+    imageAlt: "A mound of red chilli powder on a spoon, with dried chillies behind it",
+    imageCaption: "The photograph is Byadgi chilli powder, one type of red chilli powder.",
+    imageCredit: shot("GI tagged products", "CC BY-SA 4.0", ccBySa4, "Byadgi chili powder.jpg"),
     grades: [],
     packaging: bulkPack,
     tables: [
@@ -521,8 +522,15 @@ export const products: Product[] = [
     summary: "Ground cumin from India. Limits below are the FSSAI standard for cumin powder.",
     description: "Ground cumin, quoted separately from cumin seeds. Mesh size is not set in this standard.",
     image: "/images/products/cumin-powder.webp",
-    imageAlt: "A pile of ground cumin on a white surface",
-    imageCredit: shot("Guillotinado", "CC BY-SA 4.0", ccBySa4, "Comino_molido_para_ají_de_fideo.jpg"),
+    imageAlt: "Ground cumin beside a pile of whole cumin seeds",
+    imageCaption: "The photograph shows ground cumin beside whole seeds.",
+    imageCredit: shot(
+      "Henna",
+      "CC BY-SA 1.0",
+      ccBySa1,
+      "Cumin-spice.jpg",
+      "https://commons.wikimedia.org/wiki/User:Henna",
+    ),
     grades: [],
     packaging: bulkPack,
     tables: [
@@ -620,8 +628,14 @@ export const products: Product[] = [
     description:
       "Jaggery powder for food manufacturers and other bulk buyers. The figures below are the ones on the existing catalogue. An organic grade is named there as available on request. This page does not say Sarvanta holds an organic certificate.",
     image: "/images/products/jaggery-powder.webp",
-    imageAlt: "A small pile of jaggery powder",
-    imageCredit: shot("Prashank-saxena", "CC BY-SA 4.0", ccBySa4, "Jaggery_powder.png"),
+    imageAlt: "A close view of loose jaggery powder",
+    imageCredit: shot(
+      "Thamizhpparithi Maari",
+      "CC BY-SA 3.0",
+      ccBySa3,
+      "An image of jaggery powder.JPG",
+      "https://commons.wikimedia.org/wiki/User:Thamizhpparithi_Maari",
+    ),
     grades: [
       { name: "Jaggery Powder (Fine Mesh)" },
       { name: "Jaggery Powder (Standard)" },
@@ -748,9 +762,15 @@ export const products: Product[] = [
     description:
       "Tomato powder for bulk buyers. A tomato-powder colour or lycopene figure was not found in the standards used here, so none is shown.",
     image: "/images/products/tomato-powder.webp",
-    imageAlt: "Sun-dried tomato pieces",
+    imageAlt: "Sun-dried tomato halves on a paper towel",
     imageCaption: "The photograph shows sun-dried tomato. The product listed is tomato powder.",
-    imageCredit: shot("Challiyan", "CC BY-SA 3.0", ccBySa3, "Sun_dried_tomato.jpg"),
+    imageCredit: shot(
+      "Andrew Deacon",
+      "CC BY 2.0",
+      ccBy2,
+      "Sun-dried tomatoes.jpg",
+      "https://www.flickr.com/photos/aedeacon/497503617/",
+    ),
     grades: [],
     packaging: vegPack,
     tables: vegProductTables(),
@@ -936,9 +956,9 @@ export const products: Product[] = [
     description:
       "Mint powder for bulk buyers. FSSAI regulation 2.9.38 is written for dried mint leaves (Mentha spicata), not as a separate powder grade. Those leaf limits are the published reference. A powder-only table was not found.",
     image: "/images/products/mint-powder.webp",
-    imageAlt: "A pile of dried mint leaves",
+    imageAlt: "A close view of dried mint leaves",
     imageCaption: "The photograph shows dried mint leaves. The product listed is mint powder.",
-    imageCredit: shot("Touzrimounir", "CC BY-SA 4.0", ccBySa4, "Mint_dried.jpg"),
+    imageCredit: shot("Fumikas Sagisavas", "CC0 1.0", cc0, "Dried mint leaves tea.jpg"),
     grades: [],
     packaging: vegPack,
     tables: [
@@ -986,9 +1006,15 @@ export const products: Product[] = [
     description:
       "Tamarind powder for bulk buyers. The FSSAI standard for tamarind pulp, puree, and concentrate is a different product (a wet pulp with a total-soluble-solids minimum). Those pulp figures are not used here.",
     image: "/images/products/tamarind-powder.webp",
-    imageAlt: "Tamarind paste in a glass bowl",
-    imageCaption: "The photograph shows tamarind paste. The product listed is tamarind powder.",
-    imageCredit: shot("Anieyo", "CC BY-SA 4.0", ccBySa4, "Tamarind_paste.jpg"),
+    imageAlt: "Tamarind pulp on a plain white plate",
+    imageCaption: "The photograph shows tamarind pulp. The product listed is tamarind powder.",
+    imageCredit: shot(
+      "Miansari66",
+      "Public domain",
+      pd,
+      "Imli pulp.JPG",
+      "https://commons.wikimedia.org/wiki/User:Miansari66",
+    ),
     grades: [],
     packaging: vegPack,
     tables: [catalogueVegTable, fssaiDriedFruit],
