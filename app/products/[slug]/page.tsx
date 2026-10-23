@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <article className="pb-24 lg:pb-0">
-      <div className="mx-auto max-w-6xl px-5 py-10 lg:py-14">
+      <div className="mx-auto min-w-0 max-w-6xl px-5 py-10 lg:py-14">
         <p className="text-sm text-muted">
           <Link href="/products" className="underline underline-offset-4">Products</Link>
           <span aria-hidden="true"> / </span>
@@ -55,8 +55,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="mt-4 text-lg leading-relaxed text-ink-soft">{product.description}</p>
         </header>
 
-        <div className="mt-10 grid items-start gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+        <div className="mt-10 grid min-w-0 items-start gap-10 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-7">
             <Photo
               src={product.image}
               alt={product.imageAlt}
@@ -85,7 +85,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6 overflow-x-auto border border-line">
+                <div className="mt-6 max-w-full overflow-x-auto border border-line">
                   <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                     <caption className="sr-only">Specification comparison for whole red chilli varieties</caption>
                     <thead className="bg-ink text-paper">
