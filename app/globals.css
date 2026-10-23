@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FAF5EE;
+  --foreground: #0B1120;
+  --gold: #C9A84C;
+  --gold-light: #D4B96A;
+  --gold-muted: #E8D5A0;
+  --cream: #FAF5EE;
+  --cream-dark: #F0E8DA;
+  --navy:     #0B1120;
+  --navy-deep: #080D1A;
+  --navy-mid:  #142035;
+  --navy-card: #1A2D4A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-cormorant);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--cream);
+  color: var(--navy);
+}
+
+/* Ornamental gold divider */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+}
+
+/* Gold shimmer button */
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(110deg, #B8922A 0%, #C9A84C 30%, #E8C96A 50%, #C9A84C 70%, #B8922A 100%);
+  background-size: 250% auto;
+  animation: btn-shimmer 3s linear infinite;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.btn-gold:hover {
+  box-shadow: 0 6px 30px rgba(201, 168, 76, 0.5), 0 0 0 1px rgba(201, 168, 76, 0.2);
+  transform: translateY(-1px);
+}
+@keyframes btn-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Dark navy section */
+.section-dark {
+  background: linear-gradient(160deg, #0B1120 0%, #080D1A 60%, #0B1530 100%);
+}
+
+/* Card hover lift */
+.card-lift {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(11, 17, 32, 0.18), 0 4px 20px rgba(201, 168, 76, 0.18);
+}
+
+/* Gold border top — fades in from edges */
+.card-gold-top {
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(to right, transparent 0%, #C9A84C 25%, #D4B96A 50%, #C9A84C 75%, transparent 100%) 1;
+}
+
+/* Diagonal pattern */
+.hero-pattern {
+  background-image:
+    linear-gradient(45deg, rgba(201,168,76,0.04) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(201,168,76,0.04) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(201,168,76,0.04) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(201,168,76,0.04) 75%);
+  background-size: 40px 40px;
+}
+
+/* Dot grid */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(201,168,76,0.18) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Noise grain overlay — adds tactile depth to dark sections */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+}
+
+/* Gold radial glow — drop behind hero/CTA content */
+.glow-gold {
+  position: relative;
+}
+.glow-gold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 40% at 50% 60%, rgba(201, 168, 76, 0.07) 0%, transparent 70%);
+}
+
+/* Marquee */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
