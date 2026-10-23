@@ -71,7 +71,10 @@ export default function Navbar() {
     <>
       <div className="border-b border-line bg-paper">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-2 text-[11px] uppercase tracking-[0.16em] text-muted">
-          <p className="truncate">{site.location} · IEC and GST registered</p>
+          <p className="truncate">
+            {site.location}
+            <span className="hidden sm:inline"> · IEC and GST registered</span>
+          </p>
           <a className="shrink-0 text-ink" href={`tel:${site.phoneTel}`}>
             {site.phoneDisplay}
           </a>

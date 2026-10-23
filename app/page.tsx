@@ -53,17 +53,17 @@ export default function HomePage() {
   return (
     <>
       <section className="border-b border-line">
-        <div className="mx-auto max-w-6xl px-5 pb-8 pt-8 lg:pb-10 lg:pt-14">
+        <div className="mx-auto max-w-6xl px-5 pb-4 pt-6 lg:pb-10 lg:pt-14">
           <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-accent">
             Sarvanta Global · {site.location}
           </p>
           <h1 className="mt-3 max-w-4xl text-[2.15rem] leading-[1.02] sm:text-6xl sm:leading-[0.96]">
             Turmeric and red chillies, supplied in bulk from Bangalore.
           </h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft sm:mt-4 sm:text-base">
             Whole and ground, plus other spices and powders, for importers, distributors, wholesalers, and food manufacturers. Enquiry, quote within 24 hours, sample, then order.
           </p>
-          <div className="mt-6 flex gap-2">
+          <div className="mt-4 flex gap-2 sm:mt-6">
             <Link href={quoteHref()} className="btn flex-1 whitespace-nowrap sm:flex-none">
               Request a quote
             </Link>
@@ -75,13 +75,13 @@ export default function HomePage() {
 
         <div className="mx-auto max-w-6xl px-5 pb-12 lg:pb-16">
           <h2 className="sr-only">Priority products</h2>
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-6">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4 lg:gap-6">
             {priorityProducts.map((product, index) => {
               const spec = keySpec(product);
               return (
                 <li key={product.slug}>
                   <Link href={`/products/${product.slug}`} className="group block">
-                    <span className="relative block aspect-[3/2] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
+                    <span className="relative block aspect-[16/9] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
                       <Image
                         src={product.image}
                         alt={product.imageAlt}
@@ -93,11 +93,11 @@ export default function HomePage() {
                       />
                     </span>
                     <span className="mt-3 block text-[10px] font-medium uppercase tracking-[0.18em] text-accent">Priority</span>
-                    <span className="mt-1 block font-serif text-xl leading-tight text-ink sm:text-2xl">{product.name}</span>
+                    <span className="mt-1 block font-serif text-base leading-tight text-ink sm:text-2xl">{product.name}</span>
                   </Link>
                   <p className="mt-1 line-clamp-1 text-sm text-ink-soft">{supplyForm(product)}</p>
                   {spec ? (
-                    <p className="mt-1 line-clamp-2 text-xs leading-snug text-muted">
+                    <p className="mt-1 line-clamp-2 text-xs leading-snug text-muted max-sm:hidden">
                       <span className="text-ink-soft">{spec.label}. </span>
                       {spec.value}
                     </p>

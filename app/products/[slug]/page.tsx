@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         <header className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:items-start">
           <figure>
-            <div className="relative aspect-[16/10] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
+            <div className="relative aspect-[2/1] overflow-hidden bg-paper-deep lg:aspect-[4/5]">
               <Image
                 src={product.image}
                 alt={product.imageAlt}
@@ -91,12 +91,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <Fact term="Sample" value="Available on request" />
               <Fact term="Documents" value="Certificate of Analysis per lot" />
             </dl>
-            <div className="mt-6 hidden flex-wrap items-center gap-3 lg:flex">
-              <Link href={quoteHref(product.slug)} className="btn">
-                Request a quote
-              </Link>
-              <AddToEnquiry slug={product.slug} name={product.name} />
-            </div>
             <a
               href={whatsappHref(`Hello Sarvanta Global, I would like a quote for ${product.name}.`)}
               className="mt-4 inline-flex min-h-11 items-center text-sm underline underline-offset-4 lg:hidden"
