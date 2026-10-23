@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-accent">Priority product</p>
             ) : null}
             <h1 className="mt-1 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">{product.name}</h1>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft">{product.description}</p>
+            <p className="mt-3 text-base leading-relaxed text-ink-soft">{product.summary}</p>
             <a
               href={whatsappHref(`Hello Sarvanta Global, I would like a quote for ${product.name}.`)}
               className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 lg:hidden"
@@ -92,7 +92,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </header>
 
-        <dl className="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-6 grid grid-cols-2 gap-px border border-line bg-line lg:grid-cols-4">
           <Fact term="Form" value={supplyForm(product, "full")} />
           <Fact term="Minimum order" value="On request" />
           <Fact term="Sample" value="Available on request" />
@@ -109,30 +109,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        {product.tables.map((table) => (
-          <section key={table.title} className="mt-8 min-w-0">
-            <h2 className="text-xl font-semibold tracking-tight">{table.title}</h2>
-            <SpecTable rows={table.rows} caption={table.title} />
-            <SpecNote table={table} />
-          </section>
-        ))}
-
         {varieties ? (
-          <section className="mt-8 min-w-0" aria-labelledby="variety-heading">
+          <section className="mt-6 min-w-0" aria-labelledby="variety-heading">
             <h2 id="variety-heading" className="text-xl font-semibold tracking-tight">
               Varieties and specification table
             </h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{product.description}</p>
             <p className="mt-2 text-sm text-muted">
               Published figures for whole red chillies, as they appear on the existing catalogue. Scroll sideways on a small screen to compare.
             </p>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {varieties.map((variety) => (
-                <li key={variety.name} className="border border-line bg-white p-4">
-                  <h3 className="font-semibold">{variety.name}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-soft">{variety.note}</p>
-                </li>
-              ))}
-            </ul>
             <div className="mt-4 max-w-full overflow-x-auto border border-line">
               <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                 <caption className="sr-only">Specification comparison for whole red chilli varieties</caption>
@@ -165,8 +150,26 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </table>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted">{specNotes.catalogue}</p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {varieties.map((variety) => (
+                <li key={variety.name} className="border border-line bg-white p-4">
+                  <h3 className="font-semibold">{variety.name}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-soft">{variety.note}</p>
+                </li>
+              ))}
+            </ul>
           </section>
         ) : null}
+
+        {product.tables.map((table) => (
+          <section key={table.title} className="mt-8 min-w-0">
+            <h2 className="text-xl font-semibold tracking-tight">{table.title}</h2>
+            <SpecTable rows={table.rows} caption={table.title} />
+            <SpecNote table={table} />
+          </section>
+        ))}
+
+        {varieties ? null : <p className="mt-6 text-base leading-relaxed text-ink-soft">{product.description}</p>}
 
         {product.grades.length > 0 ? (
           <section className="mt-8" aria-labelledby="grades-heading">

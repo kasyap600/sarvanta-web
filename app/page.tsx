@@ -62,16 +62,13 @@ export default function HomePage() {
               Turmeric and red chillies, supplied in bulk from Bangalore.
             </h1>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              Whole and ground. Sarvanta Global also trades other spices, natural and herbal powders, and dehydrated vegetable and fruit powders for importers, distributors, wholesalers, and food manufacturers in India and worldwide.
+              Whole and ground, plus other spices and powders, for importers, distributors, wholesalers, and food manufacturers. Enquiry, quote within 24 hours, sample, then order.
             </p>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft">
-              Send an enquiry. A quote comes back within 24 hours. A sample is available before you order.
-            </p>
-            <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-              <Link href={quoteHref()} className="btn">
+            <div className="mt-5 flex gap-2">
+              <Link href={quoteHref()} className="btn flex-1 sm:flex-none">
                 Request a quote
               </Link>
-              <Link href="/products" className="btn-line">
+              <Link href="/products" className="btn-line flex-1 sm:flex-none">
                 Browse products
               </Link>
             </div>
@@ -102,9 +99,9 @@ export default function HomePage() {
                           {product.name}
                         </Link>
                       </h3>
-                      <p className="mt-0.5 text-sm text-ink-soft">{supplyForm(product)}</p>
+                      <p className="mt-0.5 line-clamp-1 text-sm text-ink-soft">{supplyForm(product)}</p>
                       {spec ? (
-                        <p className="mt-1 line-clamp-2 text-xs leading-snug text-muted">
+                        <p className="mt-1 line-clamp-1 text-xs leading-snug text-muted">
                           <span className="font-medium text-ink-soft">{spec.label}. </span>
                           {spec.value}
                         </p>
@@ -113,7 +110,7 @@ export default function HomePage() {
                         <Link href={quoteHref(product.slug)} className="btn px-3 text-sm">
                           Request quote
                         </Link>
-                        <AddToEnquiry slug={product.slug} name={product.name} />
+                        <AddToEnquiry slug={product.slug} name={product.name} short />
                       </div>
                     </div>
                   </li>

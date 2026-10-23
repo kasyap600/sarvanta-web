@@ -15,7 +15,7 @@ export function AddToEnquiry({
 }) {
   const { has, add, remove } = useEnquiry();
   const added = has(slug);
-  const label = added ? (short ? "Remove" : "Remove from enquiry") : "Add to enquiry";
+  const label = added ? (short ? "Remove" : "Remove from enquiry") : short ? "Add" : "Add to enquiry";
 
   return (
     <button
