@@ -119,6 +119,9 @@ export default function ContactForm() {
             <option value="black-pepper">Black Pepper</option>
             <option value="white-pepper">White Pepper</option>
             <option value="red-chillies">Red Chillies</option>
+            <option value="red-chilli-powder">Red Chilli Powder</option>
+            <option value="turmeric-finger">Turmeric Finger</option>
+            <option value="turmeric-powder">Turmeric Powder</option>
             <option value="dehydrated-vegetable-powders">Dehydrated Vegetable Powders</option>
             <option value="multiple">Multiple Products</option>
           </select>
@@ -133,7 +136,7 @@ export default function ContactForm() {
 
       <div className="mb-5">
         <label className={labelClass}>Preferred Packaging</label>
-        <input {...register("packaging")} placeholder="e.g. 25 KG PP bags, custom labeling" className={inputClass} />
+        <input {...register("packaging")} placeholder="e.g. packed to the buyer's requirement" className={inputClass} />
       </div>
 
       <div className="mb-8">

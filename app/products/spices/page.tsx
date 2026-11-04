@@ -7,10 +7,12 @@ import MarqueeTicker from "@/components/MarqueeTicker";
 
 export const metadata = {
   title: "Premium Spices — Sarvanta Global",
-  description: "Browse our premium Indian spices: Red Chillies, Black Pepper, and White Pepper. Export-ready, machine cleaned, and globally trusted.",
+  description: "Browse our premium Indian spices: Red Chillies, Red Chilli Powder, Turmeric Fingers, Turmeric Powder, Black Pepper, and White Pepper.",
 };
 
-const spices = products.filter((p) => ["red-chillies", "black-pepper", "white-pepper"].includes(p.slug));
+const spices = products.filter((p) =>
+  ["red-chillies", "red-chilli-powder", "turmeric-finger", "turmeric-powder", "black-pepper", "white-pepper"].includes(p.slug),
+);
 
 export default function SpicesPage() {
   return (

@@ -7,7 +7,9 @@ import { ArrowRight, Sprout, Layers, Package, ChevronDown, ChevronUp } from "luc
 import { products } from "@/lib/products";
 import Reveal from "@/components/Reveal";
 
-const spices = products.filter((p) => ["red-chillies", "black-pepper", "white-pepper"].includes(p.slug));
+const spices = products.filter((p) =>
+  ["red-chillies", "red-chilli-powder", "turmeric-finger", "turmeric-powder", "black-pepper", "white-pepper"].includes(p.slug),
+);
 const naturalpowders = products.filter((p) => ["moringa-powder", "jaggery-powder"].includes(p.slug));
 const vegPowders = [
   { name: "Tomato Powder",      file: "Tomato powder" },
