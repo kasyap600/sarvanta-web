@@ -7,7 +7,7 @@ import ProductCategories from "@/components/ProductCategories";
 
 export const metadata = {
   title: "Products — Sarvanta Global",
-  description: "Browse our premium Indian agricultural commodities: Red Chillies, Black Pepper, White Pepper, Moringa Powder, Jaggery Powder, and Dehydrated Vegetable Powders.",
+  description: "Browse our premium Indian agricultural commodities: Red Chillies, Turmeric, Black Pepper, White Pepper, Moringa Powder, Jaggery Powder, and Dehydrated Vegetable Powders.",
 };
 
 const qualityStandards = [
@@ -31,6 +31,9 @@ const industries = [
 
 const catalogueMap: Record<string, string> = {
   "red-chillies":                 "/images/Product Catalouges/RedChilli.png",
+  "red-chilli-powder":            "/images/Product Catalouges/Red Chilli Powder.png",
+  "turmeric-finger":              "/images/Product Catalouges/Turmeric Finger.png",
+  "turmeric-powder":              "/images/Product Catalouges/Turmeric Powder.png",
   "black-pepper":                 "/images/Product Catalouges/Black Pepper.png",
   "white-pepper":                 "/images/Product Catalouges/White Pepper.png",
   "moringa-powder":               "/images/Product Catalouges/Moringa Powder.png",
@@ -172,8 +175,7 @@ export default function ProductsPage() {
           </Reveal>
           <div className="flex flex-wrap items-start justify-center gap-8 lg:gap-14">
             {[
-              { label: "25 KG\nPP Bags" },
-              { label: "50 KG\nPP Bags" },
+              { label: "Packed to the\nbuyer's requirement" },
               { label: "Jute Bags" },
               { label: "Customized\nPackaging" },
               { label: "Private Labelling\n(Coming Soon)" },

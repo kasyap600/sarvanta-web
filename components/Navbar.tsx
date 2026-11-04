@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, Sprout, Layers, Package } from "lucide-react";
 
 const productDropdown = [
-  { href: "/products/spices",                    label: "Premium Spices",               desc: "Red Chillies, Black Pepper, White Pepper", icon: Sprout  },
+  { href: "/products/spices",                    label: "Premium Spices",               desc: "Red Chillies, Turmeric, Black Pepper, White Pepper", icon: Sprout  },
   { href: "/products/powders",                   label: "Natural Powders",              desc: "Moringa Powder, Jaggery Powder",            icon: Layers  },
   { href: "/products/dehydrated-vegetable-powders", label: "Vegetable Powders",        desc: "13+ dehydrated vegetable powders",          icon: Package },
 ];

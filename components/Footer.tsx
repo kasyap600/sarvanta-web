@@ -12,6 +12,9 @@ const quickLinks = [
 
 const productLinks = [
   { href: "/products/red-chillies", label: "Red Chillies" },
+  { href: "/products/red-chilli-powder", label: "Red Chilli Powder" },
+  { href: "/products/turmeric-finger", label: "Turmeric Finger" },
+  { href: "/products/turmeric-powder", label: "Turmeric Powder" },
   { href: "/products/black-pepper", label: "Black Pepper" },
   { href: "/products/white-pepper", label: "White Pepper" },
   { href: "/products/moringa-powder", label: "Moringa Powder" },
